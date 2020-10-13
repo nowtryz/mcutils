@@ -167,6 +167,15 @@ public class ItemBuilder<M extends ItemMeta> implements Cloneable {
     }
 
     /**
+     * Ignore all properties while rendering on the client
+     * @return this ItemBuilder
+     */
+    public ItemBuilder<M> addAllItemFlags() {
+        this.itemMeta.addItemFlags(ItemFlag.values());
+        return this;
+    }
+
+    /**
      * Adds the specified enchantment to this item meta.
      *
      * @param enchantment Enchantment to add
@@ -190,6 +199,14 @@ public class ItemBuilder<M extends ItemMeta> implements Cloneable {
                     .addEnchant(Enchantment.KNOCKBACK, 1, false)
                     .addItemFlags(ItemFlag.HIDE_ENCHANTS);
         return this;
+    }
+
+    /**
+     * Make the item glowing
+     * @return this ItemBuilder
+     */
+    public ItemBuilder<M> setGlowing() {
+        return setGlowing(true);
     }
 
     /**
@@ -254,6 +271,16 @@ public class ItemBuilder<M extends ItemMeta> implements Cloneable {
     public ItemBuilder<M> setDurability(short damage) {
         this.itemStack.setDurability(damage);
         return this;
+    }
+
+    @SuppressWarnings("deprecation")
+    public ItemBuilder<M> setWoolColor(DyeColor color) {
+        return this.setDurability(color.getWoolData());
+    }
+
+    @SuppressWarnings("deprecation")
+    public ItemBuilder<M> setDyeColor(DyeColor color) {
+        return this.setDurability(color.getDyeData());
     }
 
     // Build item

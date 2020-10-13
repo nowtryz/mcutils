@@ -21,31 +21,20 @@ import java.util.function.Consumer;
 
 public abstract class AbstractGui<P extends Plugin> implements Gui {
     private final Map<ItemStack, Consumer<? super InventoryClickEvent>> clickableItems = new HashMap<>();
-    @Deprecated protected final Runnable backAction;
-    protected final AbstractGui<P> previousInventory;
+    protected final Gui previousInventory;
     protected final P plugin;
     protected final Player player;
+    @Getter(onMethod_={@Override})
     private Inventory inventory;
-    @Getter private boolean isOpen = false;
 
     public AbstractGui(P plugin, Player player) {
         this.previousInventory = null;
-        this.backAction = null;
         this.plugin = plugin;
         this.player = player;
     }
 
-    @Deprecated
-    public AbstractGui(P plugin, Player player, Runnable backAction) {
-        this.previousInventory = null;
-        this.backAction = backAction;
-        this.plugin = plugin;
-        this.player = player;
-    }
-
-    public AbstractGui(P plugin, Player player, AbstractGui<P> previousInventory) {
+    public AbstractGui(P plugin, Player player, Gui previousInventory) {
         this.previousInventory = previousInventory;
-        this.backAction = null;
         this.plugin = plugin;
         this.player = player;
     }
@@ -75,18 +64,14 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
     }
 
     @Override
-    public void onClose() {
-        this.isOpen = false;
-    }
+    public void onClose() {}
 
     @Override
-    public void onOpen() {
-        this.isOpen = true;
-    }
+    public void onOpen() {}
 
     @Override
     public final void closeInventory() {
-        if (this.inventory != null && this.inventory.equals(this.player.getOpenInventory().getTopInventory())) {
+        if (this.isOpen()) {
             if (Bukkit.isPrimaryThread()) this.player.closeInventory();
             else Bukkit.getScheduler().runTask(this.plugin, this.player::closeInventory);
         }
@@ -105,6 +90,10 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
         this.inventory = inventory;
     }
 
+    public boolean isOpen() {
+        return this.inventory != null && this.inventory.equals(this.player.getOpenInventory().getTopInventory());
+    }
+
     @Override
     public final void open() {
         this.onOpen();
@@ -114,11 +103,6 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
         if (Bukkit.isPrimaryThread()) this.player.openInventory(inventory);
         else Bukkit.getScheduler().runTask(this.plugin, this::open);
         this.plugin.getInventoryListener().register(this, this.inventory);
-    }
-
-    @Override
-    public Inventory getInventory() {
-        return inventory;
     }
 
     protected final void addClickableItem(ItemStack item, Consumer<? super InventoryClickEvent> consumer) {
@@ -140,7 +124,6 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
     protected void onBack(Event event) {
         this.closeInventory();
         if (this.previousInventory != null) this.previousInventory.open();
-        else if (this.backAction != null) this.backAction.run();
     }
 
     protected void registerBackItem(ItemStack item, int pos) {
