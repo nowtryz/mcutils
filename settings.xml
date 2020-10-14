@@ -7,8 +7,8 @@
             <id>central</id>
         </server>
         <server>
-            <username>${env.ARTIFACTORY_USER}</username>
-            <password>${env.ARTIFACTORY_PASSWORD}</password>
+            <username>nowtryz.dev@gmail.com</username>
+            <password>AP76rsc1vPztwMF7S3iUBeJqaYR</password>
             <id>snapshots</id>
         </server>
     </servers>

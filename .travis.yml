@@ -13,4 +13,5 @@ before_install:
   - 'java -jar BuildTools.jar --rev 1.12.2 --compile-if-changed'
   - 'cd ..'
 script:
-  - 'mvn deploy'
+  - 'mvn deploy --batch-mode -V -s settings.xml
+'
