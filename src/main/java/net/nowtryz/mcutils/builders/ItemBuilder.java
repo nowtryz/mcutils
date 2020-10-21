@@ -273,6 +273,10 @@ public class ItemBuilder<M extends ItemMeta> implements Cloneable {
         return this;
     }
 
+    public ItemBuilder<M> setColor(DyeColor color) {
+        return this.setWoolColor(color);
+    }
+
     @SuppressWarnings("deprecation")
     public ItemBuilder<M> setWoolColor(DyeColor color) {
         return this.setDurability(color.getWoolData());

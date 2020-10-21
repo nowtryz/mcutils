@@ -64,7 +64,17 @@ public class InventoryListener<P extends Plugin> extends AbstractListener<P> {
      */
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        Optional.ofNullable(this.inventories.get(event.getClickedInventory()))
-                .ifPresent(gui -> gui.onClick(event));
+        Gui gui = this.inventories.get(event.getClickedInventory());
+
+        // Handle click event
+        if (gui != null) gui.onClick(event);
+        // Avoid shift clicks from the bottom inventory
+        else if (event.getClick().isShiftClick() && this.inventories.containsKey(event
+                        .getWhoClicked()
+                        .getOpenInventory()
+                        .getTopInventory()
+        )) {
+            event.setCancelled(true);
+        }
     }
 }

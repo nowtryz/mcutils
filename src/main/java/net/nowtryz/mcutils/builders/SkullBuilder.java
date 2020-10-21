@@ -30,6 +30,18 @@ public class SkullBuilder extends ItemBuilder<SkullMeta> {
         return this.setValue(new String(encodedData));
     }
 
+    public SkullBuilder setUUID(UUID uuid) {
+        GameProfile profile = new GameProfile(uuid, null);
+
+        try {
+            this.setProfile(profile);
+        } catch (ReflectiveOperationException exception) {
+            throw new RuntimeException("Unable to set skull's skin", exception);
+        }
+
+        return this;
+    }
+
     public SkullBuilder setValue(String value) {
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
         profile.getProperties().put("textures", new Property("textures", value));

@@ -42,7 +42,7 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
     @Override
     public final void onClick(InventoryClickEvent event) {
         // Prevent shift click from payer inventory that would interact with the opened inventory
-        if (ClickType.DOUBLE_CLICK.equals(event.getClick()) && this.player.equals(event.getWhoClicked())) {
+        if (ClickType.DOUBLE_CLICK == event.getClick() && this.player.equals(event.getWhoClicked())) {
             event.setCancelled(true);
             return;
         }
