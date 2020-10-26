@@ -90,8 +90,16 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
         this.inventory = inventory;
     }
 
+    public void createInventory(int size, String name) {
+        this.setInventory(Bukkit.createInventory(this.player, size, name));
+    }
+
     public boolean isOpen() {
         return this.inventory != null && this.inventory.equals(this.player.getOpenInventory().getTopInventory());
+    }
+
+    public boolean hasPrevious() {
+        return this.previousInventory != null;
     }
 
     @Override
@@ -105,7 +113,7 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
         this.plugin.getInventoryListener().register(this, this.inventory);
     }
 
-    protected final void addClickableItem(ItemStack item, Consumer<? super InventoryClickEvent> consumer) {
+    public final void addClickableItem(ItemStack item, Consumer<? super InventoryClickEvent> consumer) {
         this.clickableItems.put(item, consumer);
     }
 
@@ -121,7 +129,7 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
         this.clickableItems.remove(item);
     }
 
-    protected void onBack(Event event) {
+    public void onBack(Event event) {
         this.closeInventory();
         if (this.previousInventory != null) this.previousInventory.open();
     }

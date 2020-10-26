@@ -33,12 +33,14 @@ public class SkullBuilder extends ItemBuilder<SkullMeta> {
     public SkullBuilder setUUID(UUID uuid) {
         GameProfile profile = new GameProfile(uuid, null);
 
-        try {
-            this.setProfile(profile);
-        } catch (ReflectiveOperationException exception) {
-            throw new RuntimeException("Unable to set skull's skin", exception);
-        }
+        this.setProfile(profile);
+        return this;
+    }
 
+    public SkullBuilder setName(String name) {
+        GameProfile profile = new GameProfile(UUID.randomUUID(), name);
+
+        this.setProfile(profile);
         return this;
     }
 
@@ -46,21 +48,20 @@ public class SkullBuilder extends ItemBuilder<SkullMeta> {
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
         profile.getProperties().put("textures", new Property("textures", value));
 
-        try {
-            this.setProfile(profile);
-        } catch (ReflectiveOperationException exception) {
-            throw new RuntimeException("Unable to set skull's skin", exception);
-        }
-
+        this.setProfile(profile);
         return this;
     }
 
-    private void setProfile(GameProfile profile) throws ReflectiveOperationException {
-        if (PROFILE_FIELD == null) {
-            PROFILE_FIELD = this.itemMeta.getClass().getDeclaredField("profile");
-            PROFILE_FIELD.setAccessible(true);
-        }
+    private void setProfile(GameProfile profile) {
+        try {
+            if (PROFILE_FIELD == null) {
+                PROFILE_FIELD = this.itemMeta.getClass().getDeclaredField("profile");
+                PROFILE_FIELD.setAccessible(true);
+            }
 
-        PROFILE_FIELD.set(this.itemMeta, profile);
+            PROFILE_FIELD.set(this.itemMeta, profile);
+        } catch (ReflectiveOperationException exception) {
+            throw new RuntimeException("Unable to set skull's skin", exception);
+        }
     }
 }
