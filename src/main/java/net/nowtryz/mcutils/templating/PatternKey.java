@@ -22,8 +22,16 @@ public class PatternKey {
         return item != null && item.getType() != Material.AIR;
     }
 
+    public boolean isFallbackBuildable() {
+        return fallback != null && fallback.getType() != Material.AIR;
+    }
+
     public ItemBuilder<?> safeBuilder() {
         return this.isBuildable() ? this.builder() : ItemBuilder.create(Material.STONE);
+    }
+
+    public ItemBuilder<?> fallbackBuilder() {
+        return this.isFallbackBuildable() ? ItemBuilder.from(this.fallback) : ItemBuilder.create(Material.STONE);
     }
 
     public @Nullable ItemStack getFallback() {

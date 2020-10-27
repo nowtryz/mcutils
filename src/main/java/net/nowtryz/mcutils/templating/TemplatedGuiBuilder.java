@@ -22,7 +22,7 @@ public class TemplatedGuiBuilder {
 
     public final TemplatedGuiBuilder hookAction(String name, Consumer<? super InventoryClickEvent> action, ItemProvider provider) {
         this.pattern.getHook(name).ifPresent(hook -> {
-            ItemStack item = provider.build(hook.builder()).build();
+            ItemStack item = provider.build(hook.safeBuilder()).build();
             this.hookAction(hook, action, item);
         });
 
@@ -36,7 +36,7 @@ public class TemplatedGuiBuilder {
 
     public final TemplatedGuiBuilder hookProvider(String name, ItemProvider provider) {
         this.pattern.getHook(name).ifPresent(hook -> {
-            ItemStack item = provider.build(hook.builder()).build();
+            ItemStack item = provider.build(hook.safeBuilder()).build();
             this.hookItem(hook, item);
         });
 
@@ -66,6 +66,15 @@ public class TemplatedGuiBuilder {
     public TemplatedGuiBuilder hookItem(PatternKey hook, ItemStack item) {
         if (hook.getPositions().length == 0) return this;
         for (int pos : hook.getPositions()) gui.getInventory().setItem(pos, item);
+        return this;
+    }
+
+    public TemplatedGuiBuilder fallback(String hookName, ItemProvider provider) {
+        this.pattern.getHook(hookName).ifPresent(hook -> {
+            ItemStack item = provider.build(hook.fallbackBuilder()).build();
+            this.hookItem(hook, item);
+        });
+
         return this;
     }
 
