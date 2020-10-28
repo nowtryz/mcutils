@@ -15,7 +15,7 @@ public class PatternKey {
     ItemStack fallback;
 
     public ItemBuilder<?> builder() {
-        return ItemBuilder.from(this.item);
+        return ItemBuilder.from(this.item.clone());
     }
 
     public boolean isBuildable() {

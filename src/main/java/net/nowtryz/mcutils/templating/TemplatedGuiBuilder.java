@@ -1,7 +1,9 @@
 package net.nowtryz.mcutils.templating;
 
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import net.nowtryz.mcutils.api.Translation;
 import net.nowtryz.mcutils.inventory.AbstractGui;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -14,7 +16,11 @@ public class TemplatedGuiBuilder {
     private final Pattern pattern;
     private final AbstractGui<?> gui;
 
-    public TemplatedGuiBuilder name(String name) {
+    public TemplatedGuiBuilder name(@NonNull Translation translation, Object... args) {
+        return this.name(translation.get(args));
+    }
+
+    public TemplatedGuiBuilder name(@NonNull String name) {
         this.gui.createInventory(pattern.getSize(), name);
         this.gui.getInventory().setContents(pattern.toInventory());
         return this;
@@ -69,6 +75,15 @@ public class TemplatedGuiBuilder {
         return this;
     }
 
+    public TemplatedGuiBuilder fallback(String hookName, Consumer<? super InventoryClickEvent> action, ItemProvider provider) {
+        this.pattern.getHook(hookName).ifPresent(hook -> {
+            ItemStack item = provider.build(hook.fallbackBuilder()).build();
+            this.hookAction(hook, action, item);
+        });
+
+        return this;
+    }
+
     public TemplatedGuiBuilder fallback(String hookName, ItemProvider provider) {
         this.pattern.getHook(hookName).ifPresent(hook -> {
             ItemStack item = provider.build(hook.fallbackBuilder()).build();
@@ -97,7 +112,27 @@ public class TemplatedGuiBuilder {
      * @return this builder
      */
     public final TemplatedGuiBuilder hookBack(String hookName) {
-        if (gui.hasPrevious())this.hookAction(hookName, gui::onBack);
+        if (gui.hasPrevious())this.hookAction(hookName, this.gui::onBack);
+        return this;
+    }
+
+    /**
+     * Remove all action previously linked to the hook and rewire to the new item
+     * @param hookName the name of the hook in the pattern
+     * @return this builder
+     */
+    public final TemplatedGuiBuilder reHook(String hookName, ItemProvider provider) {
+        this.pattern.getHook(hookName).ifPresent(hook -> {
+            int[] positions = hook.getPositions();
+
+            // skip if there is nothing to update
+            if (positions.length == 0) return;
+
+            ItemStack item = provider.build(hook.safeBuilder()).build();
+            this.gui.swapClickableItem(positions[0], item);
+            for (int i = 1; i < positions.length; i++) this.gui.getInventory().setItem(positions[i], item);
+        });
+
         return this;
     }
 

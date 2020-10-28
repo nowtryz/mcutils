@@ -136,7 +136,7 @@ public abstract class TemplatedPaginatedGui<P extends Plugin, V> extends Abstrac
     }
 
     @Override
-    public final void onOpen() {
+    public void onOpen() {
         super.onOpen();
         this.fill();
     }

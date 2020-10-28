@@ -46,7 +46,7 @@ public class PatternKeyFactory {
         if (section.contains("skull")) return parseSkull(section.getConfigurationSection("skull"));
         if (section.contains("material")) return parseMaterial(section);
 
-        throw new IllegalArgumentException("Key must have one of the following properties: material, skull; (" + section.getCurrentPath() + ")");
+        throw new IllegalArgumentException("Key must have one of the following properties: material, skull (" + section.getCurrentPath() + ")");
     }
 
     private static ItemBuilder<?> parseMaterial(ConfigurationSection section) {

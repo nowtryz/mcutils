@@ -8,11 +8,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,21 +39,9 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
     }
 
     @Override
-    public final void onClick(InventoryClickEvent event) {
-        // Prevent shift click from payer inventory that would interact with the opened inventory
-        if (ClickType.DOUBLE_CLICK == event.getClick() && this.player.equals(event.getWhoClicked())) {
-            event.setCancelled(true);
-            return;
-        }
-
+    public final void onClick(@NotNull InventoryClickEvent event) {
         if (!this.inventory.equals(event.getClickedInventory())) return;
         event.setCancelled(true);
-
-        // close the inventory if the player clicked outside of the inventory
-        if (event.getSlotType().equals(InventoryType.SlotType.OUTSIDE)) {
-            this.closeInventory();
-            return;
-        }
 
         Optional.ofNullable(event.getCurrentItem())
                 .filter(itemStack -> !itemStack.getType().equals(Material.AIR))
@@ -64,19 +51,12 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
     }
 
     @Override
-    public void onClose() {}
-
-    @Override
-    public void onOpen() {}
-
-    @Override
     public final void closeInventory() {
         if (this.isOpen()) {
             if (Bukkit.isPrimaryThread()) this.player.closeInventory();
             else Bukkit.getScheduler().runTask(this.plugin, this.player::closeInventory);
         }
-
-        this.onClose();
+        // No need to call onClose, it will be called by the listener
     }
 
     /**
@@ -104,12 +84,9 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
 
     @Override
     public final void open() {
-        this.onOpen();
-
         // Packet sent to open an inventory must be sent from primary thread
         // see https://www.spigotmc.org/threads/receiving-a-cance.lledpackethandleexception.222476/
-        if (Bukkit.isPrimaryThread()) this.player.openInventory(inventory);
-        else Bukkit.getScheduler().runTask(this.plugin, this::open);
+        SchedulerUtil.runOnPrimary(this.plugin, () -> this.player.openInventory(inventory));
         this.plugin.getInventoryListener().register(this, this.inventory);
     }
 
@@ -125,13 +102,27 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
         });
     }
 
-    protected final void removeClickableItem(ItemStack item) {
+    /**
+     * Keep the clickable action of the previous item in the slot and transfert it to the new item
+     * @param slot the slot where the item to swap is
+     * @param next the new item to put instead
+     */
+    public final void swapClickableItem(int slot, ItemStack next) {
+        Consumer<? super InventoryClickEvent> action = this.clickableItems.remove(this.getInventory().getItem(slot));
+        this.addClickableItem(slot, next, action);
+    }
+
+    public final void removeClickableItem(ItemStack item) {
         this.clickableItems.remove(item);
     }
 
+    public final void removeClickableItem(int slot) {
+        this.removeClickableItem(this.inventory.getItem(slot));
+    }
+
     public void onBack(Event event) {
-        this.closeInventory();
         if (this.previousInventory != null) this.previousInventory.open();
+        else this.closeInventory();
     }
 
     protected void registerBackItem(ItemStack item, int pos) {

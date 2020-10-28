@@ -1,13 +1,15 @@
 package net.nowtryz.mcutils.api;
 
+import net.nowtryz.mcutils.api.listener.InventoryListener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public interface Gui {
     /**
-     * Notify the controller that the inventory will be open by the player. Used to run pre-open logic
+     * Notify the controller that the inventory will be opened by the player. Used to run pre-open logic
      */
-    void onOpen();
+    default void onOpen() {}
 
     /**
      * Make the player open the inventory
@@ -19,11 +21,14 @@ public interface Gui {
      * not to use it, in favor to {@link Gui#closeInventory()}} if you want to force a player to close
      * on inventory
      *
+     * <p>Do not forget to call <code>super</code>'s {@link Gui#onOpen()} method when overriding it to ensure all parent
+     * classes get the event, or else some strange behavior can occurre.
+     *
      * <p>A common reason to call this method is if you create your own implementation of
-     * {@link net.nowtryz.mcutils.listener.InventoryListener InventoryListener} and notice inventories while clicks
-     * happen
+     * {@link InventoryListener InventoryListener} and notice inventories while one
+     * is closed
      */
-    void onClose();
+    default void onClose() {}
 
     /**
      * Force the player to close the inventory and run close logic
@@ -34,11 +39,12 @@ public interface Gui {
      * Handles a click event and run click logic, e.g. run actions bound to items
      * @param event the click event that occurred.
      */
-    void onClick(InventoryClickEvent event);
+    void onClick(@NotNull InventoryClickEvent event);
 
     /**
      * Get the minecraft inventory bound to this controller
      * @return the inventory
      */
+    @NotNull
     Inventory getInventory();
 }

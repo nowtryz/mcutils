@@ -22,9 +22,13 @@ public class BukkitModule<T extends JavaPlugin & Plugin> extends AbstractModule 
 
     @Override
     protected void configure() {
+        // Plugin binding
         bind(Plugin.class).to(classOfT);
         bind(JavaPlugin.class).to(classOfT);
         bind(classOfT).toInstance(this.plugin);
+
+        // API bindings
+//        bind(InventoryListener.class);
     }
 
     @Provides
