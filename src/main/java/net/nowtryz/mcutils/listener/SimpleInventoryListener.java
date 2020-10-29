@@ -7,7 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
@@ -53,22 +53,13 @@ public class SimpleInventoryListener extends AbstractListener implements Invento
     }
 
     /**
-     * Notice the {@link Gui} related to this event that its {@link Inventory} got opened
-     * @param event the open event
-     */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onOpen(InventoryOpenEvent event) {
-        Optional.ofNullable(this.inventories.get(event.getInventory())).ifPresent(Gui::onOpen);
-    }
-
-    /**
      * Handle click event and find the controller bound the clicked inventory to run its core logic. If the inventory is
      * not bound to any controller, the listener will simple ignore this event
      * @param event the click event
      */
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        // Wz use the hashcode of the inventory to have direct access to the related gui
+        // We use the hashcode of the inventory to have direct access to the related gui
         Gui gui = this.inventories.get(event.getClickedInventory());
 
         // Handle click event
@@ -90,5 +81,16 @@ public class SimpleInventoryListener extends AbstractListener implements Invento
                 topGui.closeInventory();
             }
         }
+    }
+
+    @EventHandler
+    public void onDrag(InventoryDragEvent event) {
+        // We use the hashcode of the inventory to have direct access to the related gui
+        Gui gui = this.inventories.get(event.getInventory());
+
+        event.getRawSlots().forEach(System.out::println);
+
+        // Handle drag event
+        if (gui != null) gui.onDrag(event);
     }
 }

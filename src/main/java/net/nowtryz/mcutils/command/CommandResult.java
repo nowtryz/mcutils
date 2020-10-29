@@ -28,7 +28,7 @@ public enum CommandResult {
      */
     INTERNAL_ERROR(true, false),
     /**
-     * The arguments sent to the command are invalid
+     * The arguments sent to the command are invalid so, a usage message should be printed
      */
     INVALID_ARGUMENTS(false, false),
     /**

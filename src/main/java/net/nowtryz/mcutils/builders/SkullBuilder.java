@@ -52,7 +52,7 @@ public class SkullBuilder extends ItemBuilder<SkullMeta> {
         return this;
     }
 
-    private void setProfile(GameProfile profile) {
+    private synchronized void setProfile(GameProfile profile) {
         try {
             if (PROFILE_FIELD == null) {
                 PROFILE_FIELD = this.itemMeta.getClass().getDeclaredField("profile");

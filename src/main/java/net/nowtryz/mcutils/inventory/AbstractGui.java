@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -42,6 +43,9 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
     public final void onClick(@NotNull InventoryClickEvent event) {
         if (!this.inventory.equals(event.getClickedInventory())) return;
         event.setCancelled(true);
+
+        // prevent event from occurring twice (once for the second click, and twice for the double click event)
+        if (event.getClick() == ClickType.DOUBLE_CLICK) return;
 
         Optional.ofNullable(event.getCurrentItem())
                 .filter(itemStack -> !itemStack.getType().equals(Material.AIR))
@@ -84,6 +88,8 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
 
     @Override
     public final void open() {
+        this.onOpen();
+
         // Packet sent to open an inventory must be sent from primary thread
         // see https://www.spigotmc.org/threads/receiving-a-cance.lledpackethandleexception.222476/
         SchedulerUtil.runOnPrimary(this.plugin, () -> this.player.openInventory(inventory));

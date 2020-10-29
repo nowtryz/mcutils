@@ -69,7 +69,7 @@ public class PatternKeyFactory {
         throw new IllegalArgumentException("For a skull item, you must at least specify one of the following fields:\n" +
                 "- data: data value of the head\n" +
                 "- url: url of the head's texture\n" +
-                "- player: the uuid of a player (be careful, does not work well with offline mode)\n" +
+                "- player: the name of a player\n" +
                 "(" + section.getCurrentPath() + ")"
         );
     }

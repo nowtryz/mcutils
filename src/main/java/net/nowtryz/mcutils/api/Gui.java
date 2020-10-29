@@ -2,6 +2,7 @@ package net.nowtryz.mcutils.api;
 
 import net.nowtryz.mcutils.api.listener.InventoryListener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,6 +41,14 @@ public interface Gui {
      * @param event the click event that occurred.
      */
     void onClick(@NotNull InventoryClickEvent event);
+
+    /**
+     * Handles a drag event in order to generally cancel it
+     * @param event the drag event
+     */
+    default void onDrag(InventoryDragEvent event) {
+        event.setCancelled(true);
+    }
 
     /**
      * Get the minecraft inventory bound to this controller

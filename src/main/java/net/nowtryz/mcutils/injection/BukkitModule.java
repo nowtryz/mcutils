@@ -25,6 +25,7 @@ public class BukkitModule<T extends JavaPlugin & Plugin> extends AbstractModule 
         // Plugin binding
         bind(Plugin.class).to(classOfT);
         bind(JavaPlugin.class).to(classOfT);
+        bind(org.bukkit.plugin.Plugin.class).to(classOfT);
         bind(classOfT).toInstance(this.plugin);
 
         // API bindings
