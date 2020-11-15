@@ -1,4 +1,4 @@
-package net.nowtryz.mcutils.command;
+package net.nowtryz.mcutils.legacycommand;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;

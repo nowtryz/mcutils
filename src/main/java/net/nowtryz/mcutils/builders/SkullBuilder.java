@@ -56,9 +56,9 @@ public class SkullBuilder extends ItemBuilder<SkullMeta> {
         try {
             if (PROFILE_FIELD == null) {
                 PROFILE_FIELD = this.itemMeta.getClass().getDeclaredField("profile");
-                PROFILE_FIELD.setAccessible(true);
             }
 
+            PROFILE_FIELD.setAccessible(true);
             PROFILE_FIELD.set(this.itemMeta, profile);
         } catch (ReflectiveOperationException exception) {
             throw new RuntimeException("Unable to set skull's skin", exception);

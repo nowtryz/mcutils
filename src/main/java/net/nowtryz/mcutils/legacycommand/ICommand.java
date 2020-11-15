@@ -1,4 +1,4 @@
-package net.nowtryz.mcutils.command;
+package net.nowtryz.mcutils.legacycommand;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;

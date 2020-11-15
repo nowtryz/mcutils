@@ -1,4 +1,4 @@
-package net.nowtryz.mcutils.command;
+package net.nowtryz.mcutils.legacycommand;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -13,6 +13,7 @@ import java.util.List;
 public interface ConsoleCommand<P extends Plugin> extends Executable<P> {
 
     @Override
+    @SuppressWarnings("deprecation")
     default @NotNull CommandResult execute(Plugin plugin, CommandSender sender, String[] args) {
         if (!(sender instanceof ConsoleCommandSender)) return CommandResult.NOT_A_CONSOLE;
         else return this.execute(plugin, (ConsoleCommandSender) sender, args);

@@ -1,4 +1,4 @@
-package net.nowtryz.mcutils.command;
+package net.nowtryz.mcutils.legacycommand;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,6 +13,7 @@ import java.util.List;
 public interface PlayerCommand<Plugin extends JavaPlugin> extends Executable<Plugin> {
 
     @Override
+    @SuppressWarnings("deprecation")
     default @NotNull CommandResult execute(Plugin plugin, CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) return CommandResult.NOT_A_PLAYER;
         else return this.execute(plugin, (Player) sender, args);
