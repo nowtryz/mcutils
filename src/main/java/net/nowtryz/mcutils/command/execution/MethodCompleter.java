@@ -34,8 +34,9 @@ public class MethodCompleter implements net.nowtryz.mcutils.command.execution.Co
         this.completer = method.getAnnotation(Completer.class);
         this.staticMethod = (method.getModifiers() & Modifier.STATIC) != 0;
 
-        if (PATTERN_ON_SPACE.split(this.getCommand()).length <= 2) {
-            throw new IllegalArgumentException("Cannot register a command completer that has less than an argument");
+        if (PATTERN_ON_SPACE.split(this.getCommand()).length < 2) {
+            throw new IllegalArgumentException("Cannot register a command completer that has less than an argument: " +
+                    this.getCommand());
         }
     }
 

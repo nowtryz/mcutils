@@ -9,7 +9,6 @@ import net.nowtryz.mcutils.command.graph.CommandAdapter;
 import net.nowtryz.mcutils.command.graph.CommandForest;
 import net.nowtryz.mcutils.command.graph.CommandRoot;
 import net.nowtryz.mcutils.command.contexts.CompletionContext;
-import net.nowtryz.mcutils.legacycommand.CommandResult;
 import net.nowtryz.mcutils.injection.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -35,7 +34,6 @@ public class CommandManager {
     private final Plugin plugin;
     private final Logger logger;
 
-    // TODO context providers
     // TODO help command
 
     @Inject
@@ -139,10 +137,11 @@ public class CommandManager {
             ));
         }
 
-        else if (method.getParameterCount() != 1 || method.getParameterTypes()[0].isAssignableFrom(CompletionContext.class)) {
+        else if (method.getParameterCount() != 1 || !method.getParameterTypes()[0].isAssignableFrom(CompletionContext.class)) {
             this.logger.warning(String.format(
-                    "%s is not a valid completer, expected one parameter of type CompletionContext",
-                    method.getDeclaringClass().getName() + "." + method.getName()
+                    "%s is not a valid completer, expected one parameter of type CompletionContext or a subclass, got %s",
+                    method.getDeclaringClass().getName() + "." + method.getName(),
+                    Arrays.toString(method.getParameterTypes())
             ));
         }
 
@@ -196,8 +195,8 @@ public class CommandManager {
             // tab completer to use the node implementations
             if (pluginCommand.getPlugin() == this.plugin) {
                 CommandAdapter adapter = node.getCommand();
-                pluginCommand.setExecutor((sender, cmd, label, args) -> adapter.execute(sender, label, args));
-                pluginCommand.setTabCompleter((sender, cmd, label, args) -> adapter.tabComplete(sender, label, args));
+                pluginCommand.setExecutor(adapter);
+                pluginCommand.setTabCompleter(adapter);
                 return;
             }
         }

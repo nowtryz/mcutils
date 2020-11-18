@@ -2,7 +2,7 @@ package net.nowtryz.mcutils.command.graph;
 
 import com.google.common.base.Strings;
 import net.nowtryz.mcutils.command.contexts.NodeSearchContext;
-import net.nowtryz.mcutils.command.exceptions.DuplicationException;
+import net.nowtryz.mcutils.command.exceptions.ExecutorDuplicationException;
 import net.nowtryz.mcutils.command.execution.Completer;
 import net.nowtryz.mcutils.command.execution.Executor;
 import lombok.AccessLevel;
@@ -73,7 +73,7 @@ public class CommandNode {
     }
 
     void setCommand(Executor executor) {
-        if (this.executor != null) throw new DuplicationException(this.executor, executor);
+        if (this.executor != null) throw new ExecutorDuplicationException(this.executor, executor);
         this.executor = executor;
     }
 

@@ -1,7 +1,6 @@
 package net.nowtryz.mcutils.command;
 
 import net.nowtryz.mcutils.command.contexts.ExecutionContext;
-import net.nowtryz.mcutils.legacycommand.CommandResult;
 
 @FunctionalInterface
 public interface ResultHandler {

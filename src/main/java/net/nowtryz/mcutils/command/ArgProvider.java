@@ -1,6 +1,6 @@
 package net.nowtryz.mcutils.command;
 
-public interface Provider<T> {
+public interface ArgProvider<T> {
     Class<T> getProvidedClass();
     T provide(String argument);
 

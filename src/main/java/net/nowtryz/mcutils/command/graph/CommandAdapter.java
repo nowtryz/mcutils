@@ -8,16 +8,17 @@ import net.nowtryz.mcutils.command.ResultHandler;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import net.nowtryz.mcutils.legacycommand.CommandResult;
+import net.nowtryz.mcutils.command.CommandResult;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class CommandAdapter extends Command {
+public class CommandAdapter extends Command implements TabExecutor {
     @Setter @Getter
     private CommandRoot node;
 
@@ -37,6 +38,19 @@ public class CommandAdapter extends Command {
     @Override
     public String getUsage() {
         return this.node.getUsage();
+    }
+
+    /**
+     * Proxies Commands from PluginCommand to our node
+     * @param sender the command sender
+     * @param command the plugin command being called
+     * @param label the label used to call the command
+     * @param args the command arguments
+     * @return the result we should return if the command was executed normally
+     */
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        return this.execute(sender, label, args);
     }
 
     @Override
@@ -96,6 +110,19 @@ public class CommandAdapter extends Command {
     private boolean handle(ExecutionContext context, @NonNull CommandResult result) {
         this.handler.handle(context, result);
         return result.isValid();
+    }
+
+    /**
+     * Proxies tab completion from PluginCommand to our node
+     * @param sender the command sender
+     * @param command the plugin command being called
+     * @param label the label used to call the command
+     * @param args the command arguments
+     * @return the result we should return if the command was executed normally
+     */
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        return this.tabComplete(sender, label, args);
     }
 
     @Override

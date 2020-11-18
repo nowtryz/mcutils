@@ -1,14 +1,14 @@
 package net.nowtryz.mcutils.command.annotations;
 
-import net.nowtryz.mcutils.command.Provider;
+import net.nowtryz.mcutils.command.ArgProvider;
 
 import java.lang.annotation.*;
 
 @Documented
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(Providers.class)
-public @interface Provides {
+@Repeatable(ArgProviders.class)
+public @interface ProvidesArg {
     String target();
-    Class<? extends Provider<?>> provider();
+    Class<? extends ArgProvider<?>> provider();
 }

@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Value;
-import net.nowtryz.mcutils.legacycommand.CommandResult;
+import net.nowtryz.mcutils.command.CommandResult;
 import org.jetbrains.annotations.NotNull;
 
 @Value

@@ -1,6 +1,7 @@
 package net.nowtryz.mcutils.legacycommand;
 
 import net.nowtryz.mcutils.api.Plugin;
+import net.nowtryz.mcutils.command.CommandResult;
 import org.bukkit.command.CommandSender;
 
 import java.util.function.Predicate;

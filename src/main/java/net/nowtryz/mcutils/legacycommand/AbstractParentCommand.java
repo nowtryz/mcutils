@@ -1,5 +1,6 @@
 package net.nowtryz.mcutils.legacycommand;
 
+import net.nowtryz.mcutils.command.CommandResult;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;

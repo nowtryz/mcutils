@@ -1,6 +1,6 @@
 package net.nowtryz.mcutils.command.annotations;
 
-import net.nowtryz.mcutils.command.Provider;
+import net.nowtryz.mcutils.command.ArgProvider;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.Documented;
@@ -10,7 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * <p>String-based {@linkplain Qualifier qualifier} to identify a generic argument.
  * The argument class can either be a {@link String} or any other class that will be provided to the executor by a
- * {@link Provides} annotation.
+ * {@link ProvidesArg} annotation.
  *
  * <p>Example usage:
  *
@@ -25,7 +25,7 @@ import java.lang.annotation.RetentionPolicy;
  *     ...
  *   }</pre>
  *
- * @see Provider
+ * @see ArgProvider
  */
 @Qualifier
 @Documented

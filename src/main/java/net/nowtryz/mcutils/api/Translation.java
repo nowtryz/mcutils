@@ -25,6 +25,7 @@ public interface Translation {
     default void send(CommandSender p) {
         Optional.ofNullable(this.get())
                 .filter(s -> !s.isEmpty())
+                .map(s -> s.split("\n"))
                 .ifPresent(p::sendMessage);
     }
 
@@ -36,6 +37,7 @@ public interface Translation {
     default void send(CommandSender p, Object... args) {
         Optional.ofNullable(this.get(args))
                 .filter(s -> !s.isEmpty())
+                .map(s -> s.split("\n"))
                 .ifPresent(p::sendMessage);
     }
 }

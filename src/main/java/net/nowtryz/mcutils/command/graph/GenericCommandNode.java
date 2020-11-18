@@ -1,10 +1,9 @@
 package net.nowtryz.mcutils.command.graph;
 
 import net.nowtryz.mcutils.command.contexts.NodeSearchContext;
-import net.nowtryz.mcutils.command.exceptions.DuplicationException;
+import net.nowtryz.mcutils.command.exceptions.CompleterDuplicationException;
 import net.nowtryz.mcutils.command.execution.Completer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,17 +15,13 @@ class GenericCommandNode extends CommandNode {
     }
 
     List<String> completeArgument(NodeSearchContext context) {
-        ArrayList<String> list = new ArrayList<>();
-        Optional.ofNullable(super.complete(context)).ifPresent(list::addAll);
-        Optional.ofNullable(this.completer)
+        return Optional.ofNullable(this.completer)
                 .map(c -> c.complete(context.completion().build()))
-                .ifPresent(list::addAll);
-
-        return list;
+                .orElse(null);
     }
 
     void setCompleter(Completer completer) {
-        if (this.completer != null) throw new DuplicationException(this.completer, completer);
+        if (this.completer != null) throw new CompleterDuplicationException(this.completer, completer);
         this.completer = completer;
     }
 

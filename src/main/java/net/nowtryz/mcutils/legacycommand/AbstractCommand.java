@@ -55,8 +55,9 @@ public abstract class AbstractCommand<P extends Plugin, D> implements ICommand<P
 
     @Override
     public boolean isAsync() {
-        return this.async;
-//        return false; // FIXME DEBUG
+        // We return false by default because mc developer are generally dumb and cannot use
+        // async code along with bukkit
+        return false;
     }
 
     @Override

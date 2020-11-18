@@ -1,4 +1,4 @@
-package net.nowtryz.mcutils.legacycommand;
+package net.nowtryz.mcutils.command;
 
 import lombok.AllArgsConstructor;
 

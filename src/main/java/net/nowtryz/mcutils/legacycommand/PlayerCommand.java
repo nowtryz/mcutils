@@ -1,5 +1,6 @@
 package net.nowtryz.mcutils.legacycommand;
 
+import net.nowtryz.mcutils.command.CommandResult;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
