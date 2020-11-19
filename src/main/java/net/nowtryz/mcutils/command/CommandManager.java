@@ -2,6 +2,7 @@ package net.nowtryz.mcutils.command;
 
 import net.nowtryz.mcutils.command.annotations.Command;
 import net.nowtryz.mcutils.command.annotations.Completer;
+import net.nowtryz.mcutils.command.exceptions.RegistrationException;
 import net.nowtryz.mcutils.command.execution.Executor;
 import net.nowtryz.mcutils.command.execution.MethodCompleter;
 import net.nowtryz.mcutils.command.execution.MethodExecutor;
@@ -33,6 +34,8 @@ public class CommandManager {
     private final CommandMap commandMap;
     private final Plugin plugin;
     private final Logger logger;
+
+    private boolean registered;
 
     // TODO help command
 
@@ -123,7 +126,7 @@ public class CommandManager {
                 executor.methodID())
         );
 
-        else this.forest.registerCommand(executor);
+        else this.registerCommand(executor);
     }
 
     private void registerCompleter(Method method) {
@@ -150,7 +153,7 @@ public class CommandManager {
                 method.getDeclaringClass().getName() + "." + method.getName()
         ));
 
-        else this.forest.registerCompleter(completer);
+        else this.registerCompleter(completer);
     }
 
     /*
@@ -158,11 +161,48 @@ public class CommandManager {
      */
 
     public void registerCommand(Executor executor) {
-        this.forest.registerCommand(executor);
+        if (this.registered && executor.getArguments().size() == 1) {
+            throw new IllegalStateException("Cannot register a root command once the manager is registered to bukkit");
+        }
+
+        try {
+            this.forest.registerCommand(executor);
+        } catch (Exception exception) {
+            throw new RegistrationException(executor, exception);
+        }
     }
 
+    public void registerCompleter(net.nowtryz.mcutils.command.execution.Completer completer) {
+        if (this.registered && completer.getArguments().size() == 1) {
+            throw new IllegalStateException("Cannot register a root command once the manager is registered to bukkit");
+        }
+
+        try {
+            this.forest.registerCompleter(completer);
+        } catch (Exception exception) {
+            throw new RegistrationException(completer, exception);
+        }
+    }
+
+    /**
+     * Sets the handler use by commands
+     * @param handler the handler responsible from inform the sender of the command outcome.
+     */
     public void setResultHandler(ResultHandler handler) {
         this.forest.values().forEach(tree -> tree.getCommand().setHandler(handler));
+    }
+
+    /**
+     * Init the defaults requirements for the command manager.
+     * Its generally sufficient for most projects but if use different classloaders or have a very
+     * specific project structure, you may want to use {@link #collect(String)} and then call this methods.
+     * This solution may not be useful for very complexe projects
+     * @param handler the handler responsible from inform the sender of the command outcome.
+     */
+    public void initDefaults(ResultHandler handler) {
+        this.collect(this.plugin.getClass().getPackage().getName());
+        this.setResultHandler(handler);
+        this.registerCommands();
     }
 
     /**
@@ -170,6 +210,7 @@ public class CommandManager {
      */
     public void registerCommands() {
         this.forest.values().forEach(this::register);
+        this.registered = true;
     }
 
     private void register(CommandRoot node) {

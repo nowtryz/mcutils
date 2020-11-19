@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import net.nowtryz.mcutils.command.contexts.NodeSearchContext;
 import net.nowtryz.mcutils.command.exceptions.ExecutorDuplicationException;
 import net.nowtryz.mcutils.command.execution.Completer;
+import net.nowtryz.mcutils.command.execution.Execution;
 import net.nowtryz.mcutils.command.execution.Executor;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.util.regex.Pattern;
 @Getter
 @RequiredArgsConstructor
 public class CommandNode {
-    private static final Pattern GENERIC_MATCHER = Pattern.compile("<[^\\s]*>");
+    private static final Pattern GENERIC_MATCHER = Execution.GENERIC_ARG;
 
     @Getter(AccessLevel.NONE)
     private final HashMap<String, CommandNode> children = new HashMap<>();
@@ -30,13 +31,21 @@ public class CommandNode {
         return this.children.computeIfAbsent(key, CommandNode::new);
     }
 
-    private synchronized GenericCommandNode getOrCreateGenericNode() {
-        if (this.genericNode == null) this.genericNode = new GenericCommandNode("<argument>");
+    private synchronized GenericCommandNode getOrCreateGenericNode(String argument) {
+        boolean varArgs = Execution.VAR_ARGS.matcher(argument).matches();
+
+        if (this.genericNode == null) this.genericNode = varArgs ? new VarArgsCommandNode() : new GenericCommandNode();
+        else if (varArgs && !(this.genericNode instanceof VarArgsCommandNode)) throw new IllegalStateException(
+                "Trying to register " + argument + "witch is a varargs, while the registered node does not support it. "
+                + "If you fall into this issue and your system work lie this, please report this issue in order to find"
+                + " a workaround"
+        );
+
         return this.genericNode;
     }
 
-    Executor findExecutor(NodeSearchContext context, Queue<String> remainingArgs) {
-        if (remainingArgs.isEmpty()) return this.executor;
+    CommandNode findExecutor(NodeSearchContext context, Queue<String> remainingArgs) {
+        if (remainingArgs.isEmpty()) return this;
 
         String command = remainingArgs.remove();
         CommandNode child = this.children.getOrDefault(command, this.genericNode);
@@ -84,19 +93,21 @@ public class CommandNode {
         }
 
         String node = commandLine.remove();
-        CommandNode children = GENERIC_MATCHER.matcher(node).matches() ? this.getOrCreateGenericNode() : this.children(node.toLowerCase());
+        CommandNode children = GENERIC_MATCHER.matcher(node).matches() ? this.getOrCreateGenericNode(node) : this.children(node.toLowerCase());
         children.registerCommand(commandLine, executor);
     }
 
     void registerCompleter(Queue<String> commandLine, Completer completer) {
         if (commandLine.isEmpty()) throw new IllegalStateException("Cannot register a completer for an empty command");
-        else if (commandLine.size() == 1) {
-            this.getOrCreateGenericNode().setCompleter(completer);
+
+        String node = commandLine.remove();
+
+        if (commandLine.isEmpty()) {
+            this.getOrCreateGenericNode(node).setCompleter(completer);
             return;
         }
 
-        String node = commandLine.remove();
-        CommandNode children = GENERIC_MATCHER.matcher(node).matches() ? this.getOrCreateGenericNode() : this.children(node.toLowerCase());
+        CommandNode children = GENERIC_MATCHER.matcher(node).matches() ? this.getOrCreateGenericNode(node) : this.children(node.toLowerCase());
         children.registerCompleter(commandLine, completer);
     }
 

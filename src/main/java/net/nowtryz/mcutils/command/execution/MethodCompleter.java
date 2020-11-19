@@ -7,6 +7,7 @@ import com.google.inject.assistedinject.Assisted;
 import net.nowtryz.mcutils.command.annotations.Completer;
 import net.nowtryz.mcutils.command.contexts.CompletionContext;
 import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
@@ -59,7 +60,7 @@ public class MethodCompleter implements net.nowtryz.mcutils.command.execution.Co
     }
 
     @Override
-    public String getCommand() {
+    public @NotNull String getCommand() {
         return this.completer.value();
     }
 

@@ -1,8 +1,8 @@
 package net.nowtryz.mcutils.command.execution;
 
+import net.nowtryz.mcutils.command.CommandResult;
 import net.nowtryz.mcutils.command.SenderType;
 import net.nowtryz.mcutils.command.contexts.ExecutionContext;
-import net.nowtryz.mcutils.command.CommandResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -40,7 +40,7 @@ public class PatternFactory {
 
         ConfigurationSection keysSection =  configuration.getConfigurationSection("keys");
         ImmutableMap<String, PatternKey> keys = keysSection.getKeys(false)
-                .parallelStream()
+                .stream()
                 .map(keysSection::getConfigurationSection)
                 .map(keySection -> PatternKeyFactory.fromSection(keySection, patternChars))
                 .collect(ImmutableMap.toImmutableMap(PatternKey::getKey, Function.identity()));
@@ -51,12 +51,11 @@ public class PatternFactory {
 
         ConfigurationSection hooksSection = configuration.getConfigurationSection("hooks");
         Map<String, PatternKey> hooks = hooksSection.getKeys(false)
-                .parallelStream()
+                .stream()
                 .collect(BiStream.toBiStream())
                 .mapValues((Function<String, String>) hooksSection::getString)
                 .mapValues(keys::get)
                 .toMap();
-
 
         return new Pattern(pattern, keys, hooks);
     }

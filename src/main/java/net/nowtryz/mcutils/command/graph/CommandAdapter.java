@@ -17,6 +17,7 @@ import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CommandAdapter extends Command implements TabExecutor {
     @Setter @Getter
@@ -68,22 +69,23 @@ public class CommandAdapter extends Command implements TabExecutor {
                 .args(args)
                 .build();
 
-        Executor executor = this.node.findExecutor(context);
+        CommandNode node = this.node.findExecutor(context);
+        Executor executor = Optional.ofNullable(node).map(CommandNode::getExecutor).orElse(null);
 
         if (executor == null) {
-            this.handle(context.execution().build(), CommandResult.UNKNOWN);
+            this.handle(context.execution().node(node).build(), CommandResult.UNKNOWN);
             return CommandResult.UNKNOWN.isValid();
         }
 
         if (executor.isAsync()) {
-            Bukkit.getScheduler().runTaskAsynchronously(this.node.getPlugin(), () -> this.execute(executor, context));
+            Bukkit.getScheduler().runTaskAsynchronously(this.node.getPlugin(), () -> this.execute(node, executor, context));
             // As we cannot know the effective result, we prevent the default failure behavior
             return true;
-        } else return this.execute(executor, context);
+        } else return this.execute(node, executor, context);
     }
 
-    private boolean execute(@NotNull Executor executor, NodeSearchContext context) {
-        ExecutionContext executionContext = context.execution(executor).build();
+    private boolean execute(@NotNull CommandNode node, @NotNull Executor executor, NodeSearchContext context) {
+        ExecutionContext executionContext = context.execution(executor).node(node).build();
         SenderType senderType = executor.getType();
 
         if (!context.checkPermission(executor)) {

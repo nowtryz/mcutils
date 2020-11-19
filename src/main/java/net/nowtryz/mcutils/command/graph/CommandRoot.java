@@ -2,10 +2,9 @@ package net.nowtryz.mcutils.command.graph;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import net.nowtryz.mcutils.command.contexts.NodeSearchContext;
-import net.nowtryz.mcutils.command.execution.Executor;
 import lombok.Getter;
 import lombok.Setter;
+import net.nowtryz.mcutils.command.contexts.NodeSearchContext;
 import org.bukkit.plugin.Plugin;
 
 @Getter
@@ -25,7 +24,7 @@ public class CommandRoot extends CommandNode {
         this.command = new CommandAdapter(this);
     }
 
-    public Executor findExecutor(NodeSearchContext context) {
+    public CommandNode findExecutor(NodeSearchContext context) {
         return this.findExecutor(context, context.getQueue());
     }
 

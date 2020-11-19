@@ -5,9 +5,7 @@ import com.google.inject.Singleton;
 import net.nowtryz.mcutils.command.execution.Completer;
 import net.nowtryz.mcutils.command.execution.Executor;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
@@ -26,12 +24,12 @@ public class CommandForest extends HashMap<String, CommandRoot> {
     }
 
     public void registerCommand(Executor executor) {
-        Queue<String> commandLine = new LinkedList<>(Arrays.asList(executor.getCommand().split(" ")));
+        Queue<String> commandLine = executor.getCommandLine();
         this.get(commandLine.remove()).registerCommand(commandLine, executor);
     }
 
     public void registerCompleter(Completer completer) {
-        Queue<String> commandLine = new LinkedList<>(Arrays.asList(completer.getCommand().split(" ")));
+        Queue<String> commandLine = completer.getCommandLine();
         this.get(commandLine.remove()).registerCompleter(commandLine, completer);
     }
 

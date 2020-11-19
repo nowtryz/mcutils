@@ -10,7 +10,11 @@ import java.util.Optional;
 class GenericCommandNode extends CommandNode {
     private Completer completer;
 
-    public GenericCommandNode(String key) {
+    public GenericCommandNode() {
+        super("<argument>");
+    }
+
+    protected GenericCommandNode(String key) {
         super(key);
     }
 
