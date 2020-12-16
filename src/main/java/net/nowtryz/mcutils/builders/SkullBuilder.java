@@ -2,13 +2,13 @@ package net.nowtryz.mcutils.builders;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import org.apache.commons.codec.binary.Base64;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.SkullType;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
+import java.util.Base64;
 import java.util.UUID;
 
 public class SkullBuilder extends ItemBuilder<SkullMeta> {
@@ -26,7 +26,7 @@ public class SkullBuilder extends ItemBuilder<SkullMeta> {
     }
 
     public SkullBuilder setTextureUrl(String url) {
-        byte[] encodedData = Base64.encodeBase64(String.format("{textures:{SKIN:{url:\"%s\"}}}", url).getBytes());
+        byte[] encodedData = Base64.getEncoder().encode(String.format("{textures:{SKIN:{url:\"%s\"}}}", url).getBytes());
         return this.setValue(new String(encodedData));
     }
 
