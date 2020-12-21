@@ -1,7 +1,6 @@
 package net.nowtryz.mcutils.inventory;
 
 import lombok.Getter;
-import net.nowtryz.mcutils.SchedulerUtil;
 import net.nowtryz.mcutils.api.Gui;
 import net.nowtryz.mcutils.api.Plugin;
 import org.bukkit.Bukkit;
@@ -18,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+
+import static net.nowtryz.mcutils.MCUtils.runOnPrimary;
 
 public abstract class AbstractGui<P extends Plugin> implements Gui {
     private final Map<ItemStack, Consumer<? super InventoryClickEvent>> clickableItems = new HashMap<>();
@@ -92,7 +93,7 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
 
         // Packet sent to open an inventory must be sent from primary thread
         // see https://www.spigotmc.org/threads/receiving-a-cance.lledpackethandleexception.222476/
-        SchedulerUtil.runOnPrimary(this.plugin, () -> this.player.openInventory(inventory));
+        runOnPrimary(this.plugin, () -> this.player.openInventory(inventory));
         this.plugin.getInventoryListener().register(this, this.inventory);
     }
 
@@ -102,7 +103,7 @@ public abstract class AbstractGui<P extends Plugin> implements Gui {
 
     protected final void addClickableItem(int position, ItemStack item, Consumer<? super InventoryClickEvent> consumer) {
         // Not sure but async inventory manipulation may mess things up
-        SchedulerUtil.runOnPrimary(this.plugin, () -> {
+        runOnPrimary(this.plugin, () -> {
             this.inventory.setItem(position, item);
             this.clickableItems.put(this.inventory.getItem(position), consumer);
         });
