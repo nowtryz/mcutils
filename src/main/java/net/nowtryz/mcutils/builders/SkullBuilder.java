@@ -4,21 +4,25 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.SkullType;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.util.Base64;
 import java.util.UUID;
 
-public class SkullBuilder extends ItemBuilder<SkullMeta> {
+public abstract class SkullBuilder extends ItemBuilder<SkullMeta> {
     private static Field PROFILE_FIELD = null;
 
-
-    public SkullBuilder() {
-        super(Material.SKULL_ITEM, SkullMeta.class);
-        this.setDurability((short) SkullType.PLAYER.ordinal());
+    protected SkullBuilder(Material material, Class<SkullMeta> metaClass) {
+        super(material, metaClass);
     }
+
+    protected SkullBuilder(@NotNull ItemStack item, SkullMeta itemMeta) {
+        super(item, itemMeta);
+    }
+
 
     public SkullBuilder setOwningPlayer(OfflinePlayer player) {
         this.itemMeta.setOwningPlayer(player);

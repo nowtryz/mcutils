@@ -1,5 +1,6 @@
 package net.nowtryz.mcutils.builders;
 
+import net.nowtryz.mcutils.MCUtils;
 import net.nowtryz.mcutils.api.Translation;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -10,7 +11,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -45,35 +45,37 @@ public class ItemBuilder<M extends ItemMeta> implements Cloneable {
      * Create a monster egg
      * @return an item builder for monster egg
      */
-    public static MonsterEggBuilder createEgg() {
-        return new MonsterEggBuilder();
+    public static MonterEggBuilder createEgg() {
+        return MonterEggBuilder.create();
     }
 
     /**
      * Create an item builder from the provided item
      * @param itemStack the item to edit
      * @return an item builder for monster egg
-     * @throws IllegalArgumentException if the provided item is not a {@link Material#MONSTER_EGG}
+     * @throws IllegalArgumentException if the provided item is not a monster egg
      */
-    public static MonsterEggBuilder createEggFrom(ItemStack itemStack) {
-        if (Material.MONSTER_EGG !=itemStack.getType()) {
-            throw new IllegalArgumentException("Provided item isn't an egg");
-        }
-
-        return new MonsterEggBuilder(itemStack, (SpawnEggMeta) itemStack.getItemMeta());
+    public static MonterEggBuilder createEggFrom(ItemStack itemStack) {
+        return MonterEggBuilder.create(itemStack);
     }
 
     public static SkullBuilder createSkull() {
-        return new SkullBuilder();
+        if(MCUtils.THIRTEEN_COMPATIBLE) return new ThirteenSkullBuilder();
+        else return new BellowThirteenSkullBuilder();
     }
 
     public static SkullBuilder skullForPlayer(OfflinePlayer player) {
-        return new SkullBuilder().setOwningPlayer(player);
+        return createSkull().setOwningPlayer(player);
     }
 
-    @SuppressWarnings("deprecation")
     public static ItemBuilder<ItemMeta> createGlassPane(DyeColor color) {
-        return create(Material.STAINED_GLASS_PANE).setDurability(color.getWoolData());
+        if (MCUtils.THIRTEEN_COMPATIBLE) return ThirteenGlassBuilder.createGlassPane(color);
+        else return BellowThirteenGlassBuilder.createGlassPane(color);
+    }
+
+    public static ItemBuilder<ItemMeta> createGlass(DyeColor color) {
+        if (MCUtils.THIRTEEN_COMPATIBLE) return ThirteenGlassBuilder.createGlass(color);
+        else return BellowThirteenGlassBuilder.createGlass(color);
     }
 
     // Constructor

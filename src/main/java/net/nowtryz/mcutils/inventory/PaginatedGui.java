@@ -1,7 +1,6 @@
 package net.nowtryz.mcutils.inventory;
 
 import lombok.Getter;
-import net.nowtryz.mcutils.SchedulerUtil;
 import net.nowtryz.mcutils.api.Plugin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -11,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.IntStream;
+
+import static net.nowtryz.mcutils.MCUtils.runOnPrimary;
 
 public abstract class PaginatedGui<P extends Plugin, V> extends AbstractGui<P> {
     private final int previousPos, nexPos;
@@ -61,7 +62,7 @@ public abstract class PaginatedGui<P extends Plugin, V> extends AbstractGui<P> {
 
         if (i < this.availablePos.length) {
             final int finalI = i;
-            SchedulerUtil.runOnPrimary(this.plugin, () -> {
+            runOnPrimary(this.plugin, () -> {
                 for (int j = finalI; j < this.availablePos.length; j++) {
                     this.getInventory().setItem(this.availablePos[j], null);
                 }

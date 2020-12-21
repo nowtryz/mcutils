@@ -1,7 +1,6 @@
 package net.nowtryz.mcutils.inventory;
 
 import lombok.Getter;
-import net.nowtryz.mcutils.SchedulerUtil;
 import net.nowtryz.mcutils.api.Gui;
 import net.nowtryz.mcutils.api.Plugin;
 import net.nowtryz.mcutils.builders.ItemBuilder;
@@ -14,6 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+
+import static net.nowtryz.mcutils.MCUtils.runOnPrimary;
 
 public abstract class TemplatedPaginatedGui<P extends Plugin, V> extends AbstractGui<P> {
     private final Pattern pattern;
@@ -64,7 +65,7 @@ public abstract class TemplatedPaginatedGui<P extends Plugin, V> extends Abstrac
 
         if (i < this.availablePos.length) {
             final int finalI = i;
-            SchedulerUtil.runOnPrimary(this.plugin, () -> {
+            runOnPrimary(this.plugin, () -> {
                 for (int j = finalI; j < this.availablePos.length; j++) {
                     this.getInventory().setItem(this.availablePos[j], this.paginatedKey.getFallback());
                 }
