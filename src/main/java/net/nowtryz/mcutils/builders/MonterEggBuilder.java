@@ -1,5 +1,6 @@
 package net.nowtryz.mcutils.builders;
 
+import net.nowtryz.mcutils.MCUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +13,7 @@ public abstract class MonterEggBuilder extends ItemBuilder<SpawnEggMeta> {
     }
 
     public static MonterEggBuilder create() {
-        return new BellowThirteenMonsterEggBuilder();
+        return MCUtils.THIRTEEN_COMPATIBLE ? new ThirteenEggBuilder() : new BellowThirteenMonsterEggBuilder();
     }
 
     protected MonterEggBuilder(Material material, Class<SpawnEggMeta> metaClass) {
