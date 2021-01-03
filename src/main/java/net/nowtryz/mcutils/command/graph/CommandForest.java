@@ -8,6 +8,7 @@ import net.nowtryz.mcutils.command.execution.Executor;
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Singleton
 public class CommandForest extends HashMap<String, CommandRoot> {
@@ -40,5 +41,9 @@ public class CommandForest extends HashMap<String, CommandRoot> {
                     .map(node -> node.toStringGraph(1))
                     .collect(Collectors.joining("\n")) + "\n" +
                 "}";
+    }
+
+    public Stream<Executor> listExecutors() {
+        return this.values().stream().flatMap(CommandNode::listExecutors);
     }
 }

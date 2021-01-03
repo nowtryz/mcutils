@@ -5,6 +5,6 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@interface ArgProviders {
+public @interface ArgProviders {
     ProvidesArg[] value();
 }

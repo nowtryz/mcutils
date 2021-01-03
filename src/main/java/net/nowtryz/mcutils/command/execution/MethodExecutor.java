@@ -39,8 +39,10 @@ public class MethodExecutor implements Executor {
 
     private @Nullable Object object;
 
-    private ImmutableList<ArgProvider> argProviders;
+    private ImmutableList<ArgProvider<?>> argProviders;
+    private ImmutableList<ArgProvider<?>> nullIgnoredArgProviders;
     private ImmutableList<ContextProvider<?>> contextProviders;
+    private ImmutableList<ContextProvider<?>> nullIgnoredContextProviders;
     private Injector childInjector;
     private Injector injector;
 
@@ -65,7 +67,6 @@ public class MethodExecutor implements Executor {
                 matcher.group(2) != null,
                 this.argLine.indexOf(matcher.group()) - 1)
         );
-        // TODO find a way to provide the varargs to context
 
         this.genericArgs = argBuilder.build();
         this.injectionPoint = InjectionPoint.forMethod(method, TypeLiteral.get(method.getDeclaringClass()));
@@ -106,9 +107,17 @@ public class MethodExecutor implements Executor {
         this.argProviders = Arrays.stream(method.getAnnotationsByType(ProvidesArg.class))
                 .map(this::toArgProvider)
                 .collect(ImmutableList.toImmutableList());
+        this.nullIgnoredArgProviders = this.argProviders
+                .stream()
+            .filter(ArgProvider::isIgnoreNulls)
+                .collect(ImmutableList.toImmutableList());
+
         this.contextProviders = Arrays.stream(method.getAnnotationsByType(ProvidesContext.class))
-                .map(ProvidesContext::value)
-                .map(this.injector::getInstance)
+                .map(this::toContextProvider)
+                .collect(ImmutableList.toImmutableList());
+        this.nullIgnoredContextProviders = this.contextProviders
+                .stream()
+                .filter(ContextProvider::isIgnoreNulls)
                 .collect(ImmutableList.toImmutableList());
 
         // Create the actual injector
@@ -122,6 +131,8 @@ public class MethodExecutor implements Executor {
         // Create an instance of the class if needed
         if (!this.staticMethod) this.object = this.injector.getInstance(this.method.getDeclaringClass());
     }
+
+    // TODO find a way to provide the varargs to context
 
     // Type Consistency is ensured by the Provider implementations due to their generic behavior
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -146,10 +157,11 @@ public class MethodExecutor implements Executor {
 
         for (ContextProvider provider : this.contextProviders) {
             // we bind the provider with and without the Context annotation, so the annotation is optional
-            binder.bind(provider.getProvidedClass()).toProvider(() -> provider.provide(getLocalContext()));
-            binder.bind(provider.getProvidedClass())
+            binder.bind(provider.instance.getProvidedClass())
+                    .toProvider(() -> provider.instance.provide(getLocalContext()));
+            binder.bind(provider.instance.getProvidedClass())
                     .annotatedWith(net.nowtryz.mcutils.command.annotations.Context.class)
-                    .toProvider(() -> provider.provide(getLocalContext()));
+                    .toProvider(() -> provider.instance.provide(getLocalContext()));
         }
 
         for (GenericArg genericArg : this.genericArgs) {
@@ -165,6 +177,11 @@ public class MethodExecutor implements Executor {
         }
     }
 
+    public ContextProvider<?> toContextProvider(ProvidesContext annotation) {
+        net.nowtryz.mcutils.command.ContextProvider<?> provider = this.injector.getInstance(annotation.value());
+        return new ContextProvider<>(annotation.ignoreNulls(), provider);
+    }
+
     public ArgProvider<?> toArgProvider(ProvidesArg provides) {
         String arg = PROVIDER_ARG.matcher(provides.target()).replaceFirst("$1");
         int index = this.argLine.indexOf('<' + arg + '>');
@@ -175,13 +192,20 @@ public class MethodExecutor implements Executor {
 
         net.nowtryz.mcutils.command.ArgProvider<?> provider = this.injector.getInstance(provides.provider());
         // -1 -> command label is not present in the arguments list
-        return new ArgProvider<>(arg, index - 1, provider);
+        return new ArgProvider<>(arg, index - 1, provides.ignoreNulls(), provider);
+    }
+
+    @Value
+    static class ContextProvider<T> {
+        boolean ignoreNulls;
+        net.nowtryz.mcutils.command.ContextProvider<T> instance;
     }
 
     @Value
     static class ArgProvider<T> {
         String arg;
         int index;
+        boolean ignoreNulls;
         net.nowtryz.mcutils.command.ArgProvider<T> provider;
     }
 
@@ -209,6 +233,23 @@ public class MethodExecutor implements Executor {
     @Override
     public @NotNull CommandResult execute(ExecutionContext context) throws Throwable {
         this.localContext.set(context);
+
+        // TODO use a "context cache" in order to call providers only once per execution
+
+        // If a provided argument is null while null is ignored, call its provider's onNull
+        for (ArgProvider<?> provider : this.nullIgnoredArgProviders) {
+            String argument = getLocalContext().getArgs()[provider.index];
+            if (provider.getProvider().provide(argument) == null) {
+                return provider.getProvider().onNull(context, argument);
+            }
+        }
+
+        for (ContextProvider<?> provider : this.nullIgnoredContextProviders) {
+            if (provider.getInstance().provide(context) == null) {
+                return provider.getInstance().onNull(context);
+            }
+        }
+
         Object[] args = this.injectionPoint.getDependencies()
                 .stream()
                 .map(Dependency::getKey)

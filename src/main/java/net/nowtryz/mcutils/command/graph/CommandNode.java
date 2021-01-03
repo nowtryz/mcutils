@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 @Getter
 @RequiredArgsConstructor
@@ -130,5 +131,14 @@ public class CommandNode {
     @Override
     public String toString() {
         return this.toStringGraph(0);
+    }
+
+    public Stream<Executor> listExecutors() {
+        return Stream.concat(
+                Stream.of(this.executor, Optional.ofNullable(this.genericNode)
+                        .map(GenericCommandNode::getExecutor)
+                        .orElse(null)).filter(Objects::nonNull),
+                this.children.values().stream().flatMap(CommandNode::listExecutors)
+        );
     }
 }

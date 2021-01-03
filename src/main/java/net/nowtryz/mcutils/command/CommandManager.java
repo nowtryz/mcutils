@@ -1,7 +1,9 @@
 package net.nowtryz.mcutils.command;
 
+import com.google.common.collect.ImmutableList;
 import net.nowtryz.mcutils.command.annotations.Command;
 import net.nowtryz.mcutils.command.annotations.Completer;
+import net.nowtryz.mcutils.command.contexts.CompletionContext;
 import net.nowtryz.mcutils.command.exceptions.RegistrationException;
 import net.nowtryz.mcutils.command.execution.Executor;
 import net.nowtryz.mcutils.command.execution.MethodCompleter;
@@ -9,7 +11,6 @@ import net.nowtryz.mcutils.command.execution.MethodExecutor;
 import net.nowtryz.mcutils.command.graph.CommandAdapter;
 import net.nowtryz.mcutils.command.graph.CommandForest;
 import net.nowtryz.mcutils.command.graph.CommandRoot;
-import net.nowtryz.mcutils.command.contexts.CompletionContext;
 import net.nowtryz.mcutils.injection.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -35,6 +36,7 @@ public class CommandManager {
     private final Plugin plugin;
     private final Logger logger;
 
+    private List<Executor> commands;
     private boolean registered;
 
     // TODO help command
@@ -126,6 +128,8 @@ public class CommandManager {
                 executor.methodID())
         );
 
+        // TODO ensure every generic arg has the right class
+
         else this.registerCommand(executor);
     }
 
@@ -208,8 +212,10 @@ public class CommandManager {
     /**
      * Register commands to Bukkit's {@link CommandMap}
      */
-    public void registerCommands() {
+    public synchronized void registerCommands() {
         this.forest.values().forEach(this::register);
+
+        this.commands = this.forest.listExecutors().collect(ImmutableList.toImmutableList());
         this.registered = true;
     }
 
@@ -222,12 +228,10 @@ public class CommandManager {
             CommandAdapter adapter = (CommandAdapter) command;
 
             // if the adapter references the same command node
-            if (adapter.getNode() == node) return;
             // if the adapter is mapped to the same command but on a different node
-            if (node.getKey().equals(adapter.getNode().getKey())) {
+            if (adapter.getNode() != node && node.getKey().equals(adapter.getNode().getKey())) {
                 adapter.setNode(node);
                 node.setCommand(adapter);
-                return;
             }
         } else if (command instanceof PluginCommand) {
             PluginCommand pluginCommand = (PluginCommand) command;
@@ -238,11 +242,15 @@ public class CommandManager {
                 CommandAdapter adapter = node.getCommand();
                 pluginCommand.setExecutor(adapter);
                 pluginCommand.setTabCompleter(adapter);
-                return;
             }
+        } else {
+            this.commandMap.register(this.plugin.getName(), node.getCommand());
         }
+    }
 
-        this.commandMap.register(this.plugin.getName(), node.getCommand());
+    public List<Executor> getCommands() {
+        if (!this.registered) throw new IllegalStateException("Commands are not registered to bukkit");
+        return this.commands;
     }
 
     public void printGraph() {

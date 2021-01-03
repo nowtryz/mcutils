@@ -6,4 +6,8 @@ public interface ContextProvider<T> {
     Class<T> getProvidedClass();
     SenderType getTarget();
     T provide(ExecutionContext context);
+
+    default CommandResult onNull(ExecutionContext context) {
+        return CommandResult.NOT_IMPLEMENTED;
+    }
 }
