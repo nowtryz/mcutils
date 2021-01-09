@@ -7,7 +7,6 @@ import com.google.inject.spi.Dependency;
 import com.google.inject.spi.InjectionPoint;
 import lombok.Value;
 import net.nowtryz.mcutils.command.CommandResult;
-import net.nowtryz.mcutils.command.ContextProvider;
 import net.nowtryz.mcutils.command.SenderType;
 import net.nowtryz.mcutils.command.annotations.*;
 import net.nowtryz.mcutils.command.contexts.Context;
