@@ -14,4 +14,8 @@ public abstract class Context {
     CommandSender sender;
     String commandLabel;
     String[] args;
+
+    public void reply(String message) {
+        this.sender.sendMessage(message);
+    }
 }
