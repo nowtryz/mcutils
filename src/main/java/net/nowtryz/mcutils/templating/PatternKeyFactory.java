@@ -1,20 +1,43 @@
 package net.nowtryz.mcutils.templating;
 
+import com.google.common.collect.Sets;
+import com.mysql.fabric.xmlrpc.base.Array;
+import lombok.NonNull;
+import net.nowtryz.mcutils.MCUtils;
 import net.nowtryz.mcutils.builder.ItemBuilder;
 import net.nowtryz.mcutils.builder.SkullBuilder;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class PatternKeyFactory {
+    private final static Set<String> colorables = Sets.newHashSet(
+        "BANNER",
+        "BED",
+        "CARPET",
+        "CONCRETE",
+        "CONCRETE_POWDER",
+        "DYE",
+        "GLAZED_TERRACOTTA",
+        "SHULKER_BOX",
+        "STAINED_GLASS",
+        "STAINED_GLASS_PANE",
+        "TERRACOTTA",
+        "WALL_BANNER",
+        "WOOL"
+    );
+
     public static PatternKey fromSection(ConfigurationSection section, List<String> patternChars) {
         String key = section.getName();
         ItemStack item = parseItem(section);
@@ -53,11 +76,24 @@ public class PatternKeyFactory {
     private static ItemBuilder<?> parseMaterial(ConfigurationSection section) {
         String materialName = section.getString("material");
 
-        if (materialName == null) {
+        if (materialName == null) throw new IllegalArgumentException(section.getCurrentPath() + ".material is missing");
+
+        String formattedName = formatMaterial(materialName);
+        Material material = Material.getMaterial(formattedName);
+
+        if (material == null && MCUtils.THIRTEEN_COMPATIBLE) {
+            material = Material.getMaterial(formattedName, true);
+            if (material != null) Bukkit.getLogger().log(
+                    Level.WARNING,
+                    "[Templating] {0}.material ({1}) is a legacy material, consider changing to {2}",
+                    new String[] {section.getCurrentPath(), formattedName, material.name()}
+            );
+        }
+
+        if (material == null) {
             throw new IllegalArgumentException(section.getCurrentPath() + ".material is not a valid material");
         }
 
-        Material material = Material.matchMaterial(materialName);
         return ItemBuilder.create(material);
     }
 
@@ -86,5 +122,16 @@ public class PatternKeyFactory {
                 .toUpperCase(java.util.Locale.ENGLISH)
                 .replaceAll("\\s+", "_")
                 .replaceAll("\\W", ""));
+    }
+
+    private static String formatMaterial(@NonNull String input) {
+        String name = input
+                    .replaceFirst("minecraft:", "")
+                    .toUpperCase(Locale.ENGLISH)
+                    .replaceAll("\\s+", "_")
+                    .replaceAll("\\W", "");
+
+        if (MCUtils.THIRTEEN_COMPATIBLE && colorables.contains(name)) return "WHITE_" + name;
+        else return name;
     }
 }
