@@ -2,7 +2,7 @@ package net.nowtryz.mcutils.templating;
 
 import lombok.Builder;
 import lombok.Data;
-import net.nowtryz.mcutils.builders.ItemBuilder;
+import net.nowtryz.mcutils.builder.ItemBuilder;
 import net.nowtryz.mcutils.inventory.AbstractGui;
 import org.bukkit.event.inventory.InventoryClickEvent;
 

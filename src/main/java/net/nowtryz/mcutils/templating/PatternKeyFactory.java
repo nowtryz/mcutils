@@ -1,7 +1,7 @@
 package net.nowtryz.mcutils.templating;
 
-import net.nowtryz.mcutils.builders.ItemBuilder;
-import net.nowtryz.mcutils.builders.SkullBuilder;
+import net.nowtryz.mcutils.builder.ItemBuilder;
+import net.nowtryz.mcutils.builder.SkullBuilder;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -10,6 +10,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -43,19 +44,20 @@ public class PatternKeyFactory {
     }
 
     private static ItemBuilder<?> extractBaseItem(ConfigurationSection section) {
-        if (section.contains("skull")) return parseSkull(section.getConfigurationSection("skull"));
+        if (section.contains("skull")) return parseSkull(Objects.requireNonNull(section.getConfigurationSection("skull")));
         if (section.contains("material")) return parseMaterial(section);
 
         throw new IllegalArgumentException("Key must have one of the following properties: material, skull (" + section.getCurrentPath() + ")");
     }
 
     private static ItemBuilder<?> parseMaterial(ConfigurationSection section) {
-        Material material = Material.matchMaterial(section.getString("material"));
+        String materialName = section.getString("material");
 
-        if (material == null) {
+        if (materialName == null) {
             throw new IllegalArgumentException(section.getCurrentPath() + ".material is not a valid material");
         }
 
+        Material material = Material.matchMaterial(materialName);
         return ItemBuilder.create(material);
     }
 

@@ -1,7 +1,7 @@
 package net.nowtryz.mcutils.templating;
 
 import lombok.RequiredArgsConstructor;
-import net.nowtryz.mcutils.builders.ItemBuilder;
+import net.nowtryz.mcutils.builder.ItemBuilder;
 import net.nowtryz.mcutils.inventory.AbstractGui;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class Template<T extends AbstractGui<?>> {
     private final Pattern pattern;
     private ItemStack[] inventory;
-    private List<TemplateAction> actions;
+    private List<TemplateAction<?>> actions;
 
     public void init() {
         this.inventory = pattern.toInventory();

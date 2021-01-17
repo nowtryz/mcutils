@@ -1,7 +1,8 @@
 package net.nowtryz.mcutils.templating;
 
 import lombok.Value;
-import net.nowtryz.mcutils.builders.ItemBuilder;
+import net.nowtryz.mcutils.builder.ItemBuilder;
+import net.nowtryz.mcutils.builder.SimpleBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +15,7 @@ public class PatternKey {
     @Nullable
     ItemStack fallback;
 
-    public ItemBuilder<?> builder() {
+    public SimpleBuilder builder() {
         return ItemBuilder.from(this.item.clone());
     }
 

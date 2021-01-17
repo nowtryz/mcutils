@@ -1,6 +1,6 @@
 package net.nowtryz.mcutils.templating;
 
-import net.nowtryz.mcutils.builders.ItemBuilder;
+import net.nowtryz.mcutils.builder.ItemBuilder;
 import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
