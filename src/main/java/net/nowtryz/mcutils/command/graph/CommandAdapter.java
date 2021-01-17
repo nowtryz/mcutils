@@ -16,8 +16,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.logging.Level;
 
 public class CommandAdapter extends Command implements TabExecutor {
     @Setter @Getter
@@ -32,12 +35,12 @@ public class CommandAdapter extends Command implements TabExecutor {
     }
 
     @Override
-    public String getDescription() {
+    public @NotNull String getDescription() {
         return this.node.getDescription();
     }
 
     @Override
-    public String getUsage() {
+    public @NotNull String getUsage() {
         return this.node.getUsage();
     }
 
@@ -50,12 +53,12 @@ public class CommandAdapter extends Command implements TabExecutor {
      * @return the result we should return if the command was executed normally
      */
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         return this.execute(sender, label, args);
     }
 
     @Override
-    public boolean execute(@NonNull CommandSender sender, @NonNull String commandLabel, @NonNull String[] args) {
+    public boolean execute(@NonNull @NotNull CommandSender sender, @NonNull @NotNull String commandLabel, @NonNull String[] args) {
 
         if (!this.node.getPlugin().isEnabled()) throw new CommandException(String.format(
                 "Cannot execute command '%s' in plugin %s - plugin is disabled.",
@@ -100,12 +103,12 @@ public class CommandAdapter extends Command implements TabExecutor {
             CommandResult result = executor.execute(executionContext);
             return this.handle(executionContext, result);
         } catch (Throwable throwable) {
-            this.handle(executionContext, CommandResult.INTERNAL_ERROR);
-            throw new CommandException(String.format(
-                    "Unhandled exception executing command '%s' in plugin %s",
+            Supplier<String> errorMessage = () -> String.format(
+                    "[MCUtils] Unhandled exception executing command '%s' in plugin %s",
                     context.getCommandLabel(),
-                    this.node.getPlugin().getDescription().getFullName()
-            ), throwable);
+                    this.node.getPlugin().getDescription().getFullName());
+            Bukkit.getLogger().log(Level.WARNING, throwable, errorMessage);
+            return this.handle(executionContext, CommandResult.INTERNAL_ERROR);
         }
     }
 
@@ -123,12 +126,12 @@ public class CommandAdapter extends Command implements TabExecutor {
      * @return the result we should return if the command was executed normally
      */
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         return this.tabComplete(sender, label, args);
     }
 
     @Override
-    public List<String> tabComplete(@NonNull CommandSender sender, @NonNull String alias, @NonNull String[] args) {
+    public @NotNull List<String> tabComplete(@NonNull @NotNull CommandSender sender, @NonNull @NotNull String alias, @NonNull String[] args) {
         NodeSearchContext context = NodeSearchContext.builder()
                 .sender(sender)
                 .commandLabel(alias)
@@ -138,7 +141,7 @@ public class CommandAdapter extends Command implements TabExecutor {
 
         try {
             CommandNode completer = this.node.findCompleter(context);
-            if (completer == null) return null;
+            if (completer == null) return new ArrayList<>();
             return completer.complete(context);
         } catch (Throwable throwable) {
             StringBuilder message = new StringBuilder()

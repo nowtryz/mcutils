@@ -185,8 +185,9 @@ public class MethodExecutor implements Executor {
         String arg = PROVIDER_ARG.matcher(provides.target()).replaceFirst("$1");
         int index = this.argLine.indexOf('<' + arg + '>');
 
-        if (index == -1) throw new IllegalArgumentException(
-                String.format("Unknown <%s> argument from command `%s`", arg, this.command)
+        if (index == -1) throw new IllegalArgumentException(String.format(
+                "Unknown <%s> argument from command `%s` at %s(%s.java:1)",
+                arg, this.command.value(), this.methodID(), this.method.getDeclaringClass().getSimpleName())
         );
 
         net.nowtryz.mcutils.command.ArgProvider<?> provider = this.injector.getInstance(provides.provider());

@@ -3,7 +3,7 @@ package net.nowtryz.mcutils.inventory;
 import lombok.Getter;
 import net.nowtryz.mcutils.api.Gui;
 import net.nowtryz.mcutils.api.Plugin;
-import net.nowtryz.mcutils.builders.ItemBuilder;
+import net.nowtryz.mcutils.builder.ItemBuilder;
 import net.nowtryz.mcutils.templating.Pattern;
 import net.nowtryz.mcutils.templating.PatternKey;
 import net.nowtryz.mcutils.templating.TemplatedGuiBuilder;
