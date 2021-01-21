@@ -212,8 +212,8 @@ public class MethodExecutor implements Executor {
     // we put a provider for the given key, so we know types are corrects
     @SuppressWarnings("unchecked")
     private <T> T getCacheInstance(Injector injector, Key<T> key) {
-        return Optional.ofNullable((com.google.inject.Provider<T>) this.cache.get(key))
-                .map(com.google.inject.Provider::get)
+        return Optional.ofNullable((Provider<T>) this.cache.get(key))
+                .map(Provider::get)
                 .orElseGet(() -> injector.getInstance(key));
     }
 

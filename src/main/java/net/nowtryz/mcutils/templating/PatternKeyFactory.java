@@ -119,7 +119,7 @@ public class PatternKeyFactory {
     private static DyeColor parseColor(String name) {
         Validate.notNull(name, "Name cannot be null");
         return DyeColor.valueOf(name
-                .toUpperCase(java.util.Locale.ENGLISH)
+                .toUpperCase(Locale.ENGLISH)
                 .replaceAll("\\s+", "_")
                 .replaceAll("\\W", ""));
     }

@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 abstract class ThirteenBuilder<M extends ItemMeta, T extends ItemBuilder<T>> extends AbstractItemBuilder<M, T> {
-    private static final Pattern colorMatcher = Pattern.compile("^[A-Z]+(_.*)$");
     private static final String colorMatcher2;
 
     static {
