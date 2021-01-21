@@ -14,12 +14,15 @@ import java.util.stream.IntStream;
 import static net.nowtryz.mcutils.MCUtils.runOnPrimary;
 
 public abstract class PaginatedGui<P extends Plugin, V> extends AbstractGui<P> {
-    private final int previousPos, nexPos;
-    private ItemStack previous, next;
-    @Getter private int page = 0, count;
+    private final Map<V,ItemStack> items = new HashMap<>();
+    private final int previousPos;
+    private final int nexPos;
+    private ItemStack previous;
+    private ItemStack next;
+    @Getter private int page = 0;
+    @Getter private int count;
     private int[] availablePos;
     private List<V> values;
-    private Map<V,ItemStack> items = new HashMap<>();
 
     public PaginatedGui(P plugin, Player player, Collection<V> values, int previousPos, int nextPos) {
         super(plugin, player);

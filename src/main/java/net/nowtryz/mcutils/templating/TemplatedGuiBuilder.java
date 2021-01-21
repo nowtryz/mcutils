@@ -35,6 +35,10 @@ public class TemplatedGuiBuilder {
         return this;
     }
 
+    public final TemplatedGuiBuilder hookAction(String name, Runnable action, ItemProvider provider) {
+        return this.hookAction(name, event -> action.run(), provider);
+    }
+
     public final TemplatedGuiBuilder hookItem(String name, ItemStack item) {
         this.pattern.getHook(name).ifPresent(hook -> this.hookItem(hook, item));
         return this;
@@ -52,6 +56,10 @@ public class TemplatedGuiBuilder {
     public final TemplatedGuiBuilder hookAction(String name, Consumer<? super InventoryClickEvent> action, ItemStack item) {
         this.pattern.getHook(name).ifPresent(hook -> this.hookAction(hook, action, item));
         return this;
+    }
+
+    public final TemplatedGuiBuilder hookAction(String name, Runnable action, ItemStack item) {
+        return this.hookAction(name, event -> action.run(), item);
     }
 
     public final TemplatedGuiBuilder hookAction(String name, Consumer<? super InventoryClickEvent> action) {
@@ -82,6 +90,10 @@ public class TemplatedGuiBuilder {
         });
 
         return this;
+    }
+
+    public TemplatedGuiBuilder fallback(String hookName, Runnable action, ItemProvider provider) {
+        return this.fallback(hookName, event -> action.run(), provider);
     }
 
     public TemplatedGuiBuilder fallback(String hookName, ItemProvider provider) {

@@ -2,7 +2,7 @@ package net.nowtryz.mcutils;
 
 import java.util.function.Predicate;
 
-public class ArgumentChecker {
+public class ArgumentHelper {
     public static boolean noArgs(String[] args) {
         return args.length == 0;
     }

@@ -1,6 +1,6 @@
 package net.nowtryz.mcutils.legacycommand;
 
-import net.nowtryz.mcutils.ArgumentChecker;
+import net.nowtryz.mcutils.ArgumentHelper;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,14 +24,14 @@ public abstract class AbstractCommand<P extends Plugin, D> implements ICommand<P
     private final String usage;
     private final String permission;
     private final Predicate<String[]> validator;
-    private boolean async = true;
+    protected boolean async = true;
     private D description = null;
 
     public AbstractCommand(String label, String usage, String permission) {
         this.label = label;
         this.usage = usage;
         this.permission = permission;
-        this.validator = ArgumentChecker::noArgs;
+        this.validator = ArgumentHelper::noArgs;
         this.aliases.add(label);
     }
 

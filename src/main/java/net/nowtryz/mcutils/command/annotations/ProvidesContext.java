@@ -1,6 +1,5 @@
 package net.nowtryz.mcutils.command.annotations;
 
-import net.nowtryz.mcutils.command.ArgProvider;
 import net.nowtryz.mcutils.command.ContextProvider;
 import net.nowtryz.mcutils.command.contexts.ExecutionContext;
 

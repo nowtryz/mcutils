@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 // TODO show error if a char in the pattern is not present in the keys
 
-public class PatternFactory {
+public class PatternHelper {
     public static Pattern compile(File file) {
         return compile( YamlConfiguration.loadConfiguration(file));
     }
@@ -39,6 +39,7 @@ public class PatternFactory {
         }
 
         ConfigurationSection keysSection =  configuration.getConfigurationSection("keys");
+        if (keysSection == null) throw new IllegalArgumentException("Pattern must contain a keys section");
         ImmutableMap<String, PatternKey> keys = keysSection.getKeys(false)
                 .stream()
                 .map(keysSection::getConfigurationSection)
@@ -50,6 +51,7 @@ public class PatternFactory {
                 .collect(ImmutableList.toImmutableList());
 
         ConfigurationSection hooksSection = configuration.getConfigurationSection("hooks");
+        if (hooksSection == null) throw new IllegalArgumentException("Pattern must contain a hooks section");
         Map<String, PatternKey> hooks = hooksSection.getKeys(false)
                 .stream()
                 .collect(BiStream.toBiStream())

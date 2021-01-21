@@ -184,7 +184,7 @@ abstract class AbstractItemBuilder<M extends ItemMeta, T extends ItemBuilder<T>>
             if (this.itemMeta != null) clone.itemMeta = (M) this.itemMeta.clone();
             return clone;
         } catch (CloneNotSupportedException exception) {
-            throw new Error(exception);
+            throw new IllegalStateException(exception);
         }
     }
 }

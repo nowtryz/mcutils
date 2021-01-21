@@ -3,7 +3,6 @@ package net.nowtryz.mcutils.builder.internal;
 import net.nowtryz.mcutils.builder.ItemBuilder;
 import net.nowtryz.mcutils.builder.MonterEggBuilder;
 import net.nowtryz.mcutils.builder.SimpleBuilder;
-import net.nowtryz.mcutils.builder.SkullBuilder;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;

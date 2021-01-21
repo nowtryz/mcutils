@@ -72,7 +72,7 @@ class SkullBuilder extends ItemBuilderDecorator<SkullMeta, net.nowtryz.mcutils.b
             PROFILE_FIELD.setAccessible(true);
             PROFILE_FIELD.set(this.delegate.getMeta(), profile);
         } catch (ReflectiveOperationException exception) {
-            throw new RuntimeException("Unable to set skull's skin", exception);
+            throw new IllegalStateException("Unable to set skull's skin", exception);
         }
     }
 }

@@ -1,7 +1,6 @@
 package net.nowtryz.mcutils.templating;
 
 import com.google.common.collect.Sets;
-import com.mysql.fabric.xmlrpc.base.Array;
 import lombok.NonNull;
 import net.nowtryz.mcutils.MCUtils;
 import net.nowtryz.mcutils.builder.ItemBuilder;
@@ -13,10 +12,11 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;

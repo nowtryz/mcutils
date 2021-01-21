@@ -30,7 +30,7 @@ public class MethodExecutor implements Executor {
     private final @NotNull ImmutableList<String> argLine;
     private final @NotNull ImmutableList<GenericArg> genericArgs;
     private final @NotNull ImmutableList<Dependency<?>> dependencies;
-    private final @NotNull Map<Key<?>, com.google.inject.Provider<?>> cache = new HashMap<>();
+    private final @NotNull Map<Key<?>, Provider<?>> cache = new HashMap<>();
     private final @NotNull ThreadLocal<ExecutionContext> localContext = new ThreadLocal<>();
     private final @NotNull InjectionPoint injectionPoint;
     private final @NotNull Command command;
@@ -98,7 +98,7 @@ public class MethodExecutor implements Executor {
 
     @Inject
     @SuppressWarnings("UnstableApiUsage")
-    void init(com.google.inject.Provider<Injector> injector) {
+    void init(Provider<Injector> injector) {
         // We use a provider, so AssistedInject doesn't complain about the fact we use the injector
         this.injector = injector.get();
 

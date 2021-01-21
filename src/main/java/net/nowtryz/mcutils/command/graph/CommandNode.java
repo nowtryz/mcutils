@@ -126,6 +126,11 @@ public class CommandNode {
         return builder.append(tabs).append("}").toString();
     }
 
+    /**
+     * Method that can be overridden to add information to the string visualisation the the graph
+     * @param tabs the number of tabs to display before outputs
+     * @param builder the string builder to which the output must be append
+     */
     protected void appendToStringGraph(String tabs, StringBuilder builder) {}
 
     @Override
