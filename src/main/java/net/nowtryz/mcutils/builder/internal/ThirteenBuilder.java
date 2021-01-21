@@ -14,7 +14,6 @@ import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 abstract class ThirteenBuilder<M extends ItemMeta, T extends ItemBuilder<T>> extends AbstractItemBuilder<M, T> {
