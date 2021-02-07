@@ -1,10 +1,17 @@
 language: java
 jdk:
   - openjdk8
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
 cache:
   directories:
-    - $HOME/.m2
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
     - BuildTools
+
 before_install:
   - 'date'
   - 'mkdir -p BuildTools'
@@ -12,6 +19,7 @@ before_install:
   - 'curl -z BuildTools.jar -o BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar'
   - 'java -jar BuildTools.jar --rev 1.16.4 --compile-if-changed'
   - 'cd ..'
+
+install: skip
 script:
-  - 'mvn deploy --batch-mode -V -s settings.xml
-'
+  - './gradlew build publish'

@@ -5,7 +5,10 @@ BuildTools
 .idea
 
 ### Maven template
+.gradle
 target/
+out/
+build/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
