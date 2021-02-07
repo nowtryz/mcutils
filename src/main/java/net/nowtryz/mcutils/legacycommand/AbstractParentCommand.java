@@ -104,12 +104,12 @@ public abstract class AbstractParentCommand<P extends Plugin,D> extends Abstract
      * Add commands to the already registered ones. If no commands have been registered using
      * {@link AbstractParentCommand#registerCommands(ICommand[])}, it will be called instead.<br>
      * This enables to add some commands bases on conditions, e.g.:
-     * <code><pre>
+     * <pre>
      * if (useTreeCommands) super.addCommands(
      *     new TreeCommand(this),
      *     new BigTreeCommand(this),
      * );
-     * </pre></code>
+     * </pre>
      * @param commands the commands to add
      */
     @SafeVarargs

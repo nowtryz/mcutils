@@ -29,9 +29,9 @@ import java.lang.annotation.*;
  * </ul>
  *
  * <p>Simple example:
- * <code><pre>
+ * <pre>
  *      &#064;Command("command with &lt;argument&gt; and sub commands")
- * </pre></code>
+ * </pre>
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
