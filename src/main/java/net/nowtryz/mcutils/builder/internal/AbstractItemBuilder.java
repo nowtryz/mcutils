@@ -143,13 +143,6 @@ abstract class AbstractItemBuilder<M extends ItemMeta, T extends ItemBuilder<T>>
     }
 
     @Override
-    public T setDurability(short damage) {
-        if (this.itemMeta instanceof Damageable) ((Damageable) this.itemMeta).setDamage(damage);
-        else Bukkit.getLogger().warning("[MCUtils] ItemBuilder tried to set the durability of a non damageable item");
-        return self();
-    }
-
-    @Override
     public MonterEggBuilder toEgg() {
         return ItemBuilderFactory.FACTORY.createEggFrom(this.itemStack, this.itemMeta);
     }

@@ -9,6 +9,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +51,13 @@ abstract class ThirteenBuilder<M extends ItemMeta, T extends ItemBuilder<T>> ext
     @Override
     public T setDyeColor(DyeColor color) {
         return this.setColor(color);
+    }
+
+    @Override
+    public T setDurability(short damage) {
+        if (this.itemMeta instanceof Damageable) ((Damageable) this.itemMeta).setDamage(damage);
+        else Bukkit.getLogger().warning("[MCUtils] ItemBuilder tried to set the durability of a non damageable item");
+        return self();
     }
 
     static class SimpleItemBuilder<M extends ItemMeta> extends ThirteenBuilder<M, SimpleBuilder> implements SimpleBuilder {

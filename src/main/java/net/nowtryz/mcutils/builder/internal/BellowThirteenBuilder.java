@@ -37,6 +37,12 @@ abstract class BellowThirteenBuilder<M extends ItemMeta, T extends ItemBuilder<T
         return this.setDurability(color.getDyeData());
     }
 
+    @SuppressWarnings("deprecation")
+    public T setDurability(short damage) {
+        this.itemStack.setDurability(damage);
+        return this.self();
+    }
+
     static class SimpleItemBuilder<M extends ItemMeta> extends BellowThirteenBuilder<M, SimpleBuilder> implements SimpleBuilder {
         SimpleItemBuilder(Material material, Class<M> metaClass) {
             super(material, metaClass);
