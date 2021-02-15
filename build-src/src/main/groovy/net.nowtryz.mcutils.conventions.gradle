@@ -1,0 +1,91 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'io.freefair.lombok'
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+def jdk = JavaVersion.current().majorVersion
+def compatible = JavaVersion.current().isJava11Compatible()
+def jdk_javadoc = "https://docs.oracle.com/${compatible?'en/java/':''}javase/$jdk/docs/api/".toString()
+
+ext {
+    isRelease = !version.toString().endsWith('-SNAPSHOT')
+    artifactoryUser = System.getenv('ARTIFACTORY_USER')
+    artifactoryPassword = System.getenv('ARTIFACTORY_PASSWORD')
+}
+
+dependencies {
+    compileOnly 'org.jetbrains:annotations:19.0.0'
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:deprecation"
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+javadoc.options {
+    encoding = 'UTF-8'
+    links = [
+            jdk_javadoc,
+            'https://google.github.io/guice/api-docs/latest/javadoc/',
+            'https://javadoc.io/static/com.vdurmont/semver4j/3.1.0/'
+    ]
+}
+
+publishing {
+    repositories {
+        maven {
+            url = 'https://nowtryz.jfrog.io/artifactory/' + (isRelease ? 'mcutils-releases' : 'mcutils-snapshots')
+            credentials {
+                username = artifactoryUser
+                password = artifactoryPassword
+            }
+        }
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+
+            pom {
+                name = 'Minecraft Utilities'
+                description = 'Utilities to build bukkit plugins'
+                url = 'https://github.com/nowtryz/mcutils'
+                licenses {
+                    license {
+                        name = 'GNU General Public License version 3'
+                        url = 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'Nowtryz'
+                        email = 'nowtryz.dev@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/nowtryz/mcutils.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:nowtryz/mcutils.git'
+                    url = 'https://github.com/nowtryz/mcutils'
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+plugins {
+    id 'net.nowtryz.mcutils.conventions'
+}
+
+dependencies {
+    api project(':common')
+    api project(':item-builder')
+    implementation 'com.google.mug:mug:4.5'
+    implementation "com.google.inject:guice:$guiceVersion"
+
+    compileOnly "org.spigotmc:spigot-api:$minecraftVersion"
+    compileOnly 'commons-lang:commons-lang:2.6' // commons from bukkit
+}

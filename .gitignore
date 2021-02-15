@@ -8,7 +8,7 @@ BuildTools
 .gradle
 target/
 out/
-build/
+**/build/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup

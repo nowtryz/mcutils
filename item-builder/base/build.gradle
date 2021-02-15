@@ -1,0 +1,27 @@
+plugins {
+    id 'net.nowtryz.mcutils.conventions'
+}
+
+repositories {
+    maven {
+        name = 'minecraft-repo'
+        url = 'https://libraries.minecraft.net/'
+    }
+}
+
+dependencies {
+    implementation project(':common')
+    implementation 'com.google.guava:guava:27.1-jre' // as guava will be in the classpath thanks to guice
+    compileOnly "org.spigotmc:spigot-api:$minecraftVersion"
+    compileOnly 'com.mojang:authlib:1.5.21'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                artifactId = 'item-builder-base'
+            }
+        }
+    }
+}

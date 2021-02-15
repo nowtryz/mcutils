@@ -1,0 +1,9 @@
+plugins {
+    id 'net.nowtryz.mcutils.conventions'
+}
+
+dependencies {
+    implementation project(':common')
+    implementation 'org.apache.commons:commons-lang3:3.10'
+    compileOnly "org.spigotmc:spigot-api:$minecraftVersion"
+}

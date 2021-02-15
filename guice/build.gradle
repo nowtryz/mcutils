@@ -1,0 +1,9 @@
+plugins {
+    id 'net.nowtryz.mcutils.conventions'
+}
+
+dependencies {
+    api "com.google.inject:guice:$guiceVersion"
+    implementation project(':common')
+    compileOnly "org.spigotmc:spigot-api:$minecraftVersion"
+}

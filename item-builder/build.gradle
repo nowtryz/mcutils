@@ -1,0 +1,12 @@
+plugins {
+    id 'net.nowtryz.mcutils.conventions'
+}
+
+dependencies {
+    implementation project(':common')
+    api project(':item-builder:base')
+    implementation project(':item-builder:above-1-13')
+    implementation project(':item-builder:bellow-1-13')
+
+    compileOnly "org.spigotmc:spigot-api:$minecraftVersion"
+}

@@ -1,0 +1,11 @@
+plugins {
+    id 'net.nowtryz.mcutils.conventions'
+}
+
+dependencies {
+    api project(':commands')
+    api project(':common')
+    api project(':item-builder')
+    api project(':gui')
+    api project(':guice')
+}

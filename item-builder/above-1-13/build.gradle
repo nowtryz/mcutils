@@ -1,0 +1,18 @@
+plugins {
+    id 'net.nowtryz.mcutils.conventions'
+}
+
+dependencies {
+    implementation project(':item-builder:base')
+    compileOnly 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                artifactId = 'item-builder-above-1-13'
+            }
+        }
+    }
+}

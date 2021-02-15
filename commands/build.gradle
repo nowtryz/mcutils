@@ -1,0 +1,12 @@
+plugins {
+    id 'net.nowtryz.mcutils.conventions'
+}
+
+dependencies {
+    api project(':common')
+    api project(':guice')
+    api "com.google.inject:guice:$guiceVersion"
+    api "com.google.inject.extensions:guice-assistedinject:$guiceVersion"
+    implementation 'org.reflections:reflections:0.9.12'
+    compileOnly "org.spigotmc:spigot-api:$minecraftVersion"
+}
