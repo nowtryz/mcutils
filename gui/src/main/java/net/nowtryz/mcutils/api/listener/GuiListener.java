@@ -24,4 +24,9 @@ public interface GuiListener extends EventListener {
      * @param controller the controller to register
      */
     void register(Gui controller);
+
+    /**
+     * Close all opened Guis registered to this listener.
+     */
+    void closeAll();
 }

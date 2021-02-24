@@ -5,9 +5,15 @@ plugins {
 dependencies {
     api project(':common')
     api project(':item-builder')
-    implementation 'com.google.mug:mug:4.5'
-    implementation "com.google.inject:guice:$guiceVersion"
 
-    compileOnly "org.spigotmc:spigot-api:$minecraftVersion"
-    compileOnly 'commons-lang:commons-lang:2.6' // commons from bukkit
+    implementation 'commons-lang:commons-lang:2.6' // commons from bukkit
+    implementation 'com.google.guava:guava:21.0'
+    implementation('com.google.mug:mug:4.5') {
+        exclude module: 'guava'
+    }
+    implementation("com.google.inject:guice:$guiceVersion") {
+        exclude module: 'guava'
+    }
+
+    compileOnly("org.spigotmc:spigot-api:$minecraftVersion")
 }

@@ -40,15 +40,15 @@ public class PatternHelper {
 
         ConfigurationSection keysSection =  configuration.getConfigurationSection("keys");
         if (keysSection == null) throw new IllegalArgumentException("Pattern must contain a keys section");
-        ImmutableMap<String, PatternKey> keys = keysSection.getKeys(false)
+        Map<String, PatternKey> keys = keysSection.getKeys(false)
                 .stream()
                 .map(keysSection::getConfigurationSection)
                 .map(keySection -> PatternKeyFactory.fromSection(keySection, patternChars))
-                .collect(ImmutableMap.toImmutableMap(PatternKey::getKey, Function.identity()));
+                .collect(Collectors.toMap(PatternKey::getKey, Function.identity()));
 
-        ImmutableList<PatternKey> pattern = patternChars.stream()
+        List<PatternKey> pattern = patternChars.stream()
                 .map(keys::get)
-                .collect(ImmutableList.toImmutableList());
+                .collect(Collectors.toList());
 
         ConfigurationSection hooksSection = configuration.getConfigurationSection("hooks");
         if (hooksSection == null) throw new IllegalArgumentException("Pattern must contain a hooks section");
@@ -59,6 +59,6 @@ public class PatternHelper {
                 .mapValues(keys::get)
                 .toMap();
 
-        return new Pattern(pattern, keys, hooks);
+        return new Pattern(ImmutableList.copyOf(pattern), ImmutableMap.copyOf(keys), hooks);
     }
 }

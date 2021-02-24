@@ -1,5 +1,6 @@
 package net.nowtryz.mcutils.listener;
 
+import net.nowtryz.mcutils.MCUtils;
 import net.nowtryz.mcutils.api.Gui;
 import net.nowtryz.mcutils.api.Plugin;
 import net.nowtryz.mcutils.api.listener.GuiListener;
@@ -40,6 +41,11 @@ public class SimpleInventoryListener extends AbstractListener implements GuiList
     @Override
     public void register(Gui controller) {
         this.register(controller, controller.getInventory());
+    }
+
+    @Override
+    public void closeAll() {
+        MCUtils.runOnPrimary(this.plugin, () -> this.inventories.values().forEach(Gui::closeInventory));
     }
 
     /**

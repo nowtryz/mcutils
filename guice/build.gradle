@@ -3,7 +3,10 @@ plugins {
 }
 
 dependencies {
-    api "com.google.inject:guice:$guiceVersion"
+    api("com.google.inject:guice:$guiceVersion") {
+        exclude module: 'guava'
+    }
+
     implementation project(':common')
     compileOnly "org.spigotmc:spigot-api:$minecraftVersion"
 }

@@ -11,7 +11,7 @@ repositories {
 
 dependencies {
     implementation project(':common')
-    implementation 'com.google.guava:guava:27.1-jre' // as guava will be in the classpath thanks to guice
+    implementation 'com.google.guava:guava:21.0'
     compileOnly "org.spigotmc:spigot-api:$minecraftVersion"
     compileOnly 'com.mojang:authlib:1.5.21'
 }
