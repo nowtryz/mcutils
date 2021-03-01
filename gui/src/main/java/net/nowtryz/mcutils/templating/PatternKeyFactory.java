@@ -2,6 +2,7 @@ package net.nowtryz.mcutils.templating;
 
 import com.google.common.collect.Sets;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import net.nowtryz.mcutils.MCUtils;
 import net.nowtryz.mcutils.builder.ItemBuilders;
 import net.nowtryz.mcutils.builder.api.ItemBuilder;
@@ -22,6 +23,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@RequiredArgsConstructor
 public class PatternKeyFactory {
     private final static Set<String> colorables = Sets.newHashSet(
         "BANNER",
@@ -38,17 +40,31 @@ public class PatternKeyFactory {
         "WALL_BANNER",
         "WOOL"
     );
+    private final List<String> patternChars;
 
-    public static PatternKey fromSection(ConfigurationSection section, List<String> patternChars) {
+    public PatternKey fromSection(ConfigurationSection section) {
         String key = section.getName();
         ItemStack item = parseItem(section);
         ItemStack fallStack = section.contains("fallback") ?
                 parseItem(section.getConfigurationSection("fallback")) : null;
-        int[] positions = IntStream.range(0, patternChars.size())
-                .filter(i -> key.equals(patternChars.get(i))) // Only keep those indices
-                .toArray();
+        int[] positions = this.getPositionForCharacter(key);
 
         return new PatternKey(key, positions, item, fallStack);
+    }
+
+    public PatternKey withGivenItemStack(String key, ItemStack item) {
+        int[] positions = this.getPositionForCharacter(key);
+        return new PatternKey(key, positions, item, null);
+    }
+
+    public PatternKey fromKey(String key) {
+        return this.withGivenItemStack(key, new ItemStack(Material.AIR));
+    }
+
+    private int[] getPositionForCharacter(String key) {
+        return IntStream.range(0, patternChars.size())
+                .filter(i -> key.equals(patternChars.get(i))) // Only keep those indices
+                .toArray();
     }
 
     private static ItemStack parseItem(ConfigurationSection section) {

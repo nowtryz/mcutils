@@ -1,5 +1,6 @@
 package net.nowtryz.mcutils.listener;
 
+import lombok.NonNull;
 import net.nowtryz.mcutils.MCUtils;
 import net.nowtryz.mcutils.api.Gui;
 import net.nowtryz.mcutils.api.Plugin;
@@ -46,6 +47,11 @@ public class SimpleInventoryListener extends AbstractListener implements GuiList
     @Override
     public void closeAll() {
         MCUtils.runOnPrimary(this.plugin, () -> this.inventories.values().forEach(Gui::closeInventory));
+    }
+
+    @Override
+    public Optional<Gui> getOpenedGui(@NonNull Inventory inventory) {
+        return Optional.ofNullable(this.inventories.get(inventory));
     }
 
     /**
