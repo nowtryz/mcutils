@@ -1,10 +1,7 @@
 package net.nowtryz.mcutils.builder;
 
 import net.nowtryz.mcutils.MCUtils;
-import net.nowtryz.mcutils.builder.api.ItemBuilderFactory;
-import net.nowtryz.mcutils.builder.api.MonterEggBuilder;
-import net.nowtryz.mcutils.builder.api.SimpleBuilder;
-import net.nowtryz.mcutils.builder.api.SkullBuilder;
+import net.nowtryz.mcutils.builder.api.*;
 import net.nowtryz.mcutils.builder.internal.BellowThirteenFactory;
 import net.nowtryz.mcutils.builder.internal.FactoryProvider;
 import net.nowtryz.mcutils.builder.internal.ThirteenFactory;
@@ -71,6 +68,16 @@ public final class ItemBuilders {
      */
     public static SkullBuilder skullForPlayer(OfflinePlayer player) {
         return FACTORY.skullForPlayer(player);
+    }
+
+    /**
+     * Create an armor builder from the given piece
+     * @param armor the material of the armor piece to use
+     * @throws IllegalArgumentException if the material is not a leather armor piece
+     * @return a leather armor builder
+     */
+    public static LeatherArmorBuilder createLeatherArmor(Material armor) {
+        return FACTORY.createLeatherArmor(armor);
     }
 
     /**

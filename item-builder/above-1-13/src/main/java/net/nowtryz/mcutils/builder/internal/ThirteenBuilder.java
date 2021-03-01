@@ -2,6 +2,7 @@ package net.nowtryz.mcutils.builder.internal;
 
 import lombok.NonNull;
 import net.nowtryz.mcutils.builder.api.ItemBuilder;
+import net.nowtryz.mcutils.builder.api.LeatherArmorBuilder;
 import net.nowtryz.mcutils.builder.api.MonterEggBuilder;
 import net.nowtryz.mcutils.builder.api.SimpleBuilder;
 import org.bukkit.Bukkit;
@@ -11,6 +12,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.jetbrains.annotations.NotNull;
 
@@ -102,6 +104,26 @@ abstract class ThirteenBuilder<M extends ItemMeta, T extends ItemBuilder<T>> ext
                 return this;
             }
             this.itemStack.setType(Material.valueOf(type.name() + "_SPAWN_EGG"));
+            return this;
+        }
+    }
+
+    static class SimpleLeatherArmorBuilder extends ThirteenBuilder<LeatherArmorMeta, LeatherArmorBuilder> implements LeatherArmorBuilderTrait {
+        SimpleLeatherArmorBuilder(Material material) {
+            super(material, LeatherArmorMeta.class);
+        }
+
+        SimpleLeatherArmorBuilder(@NotNull ItemStack item, LeatherArmorMeta itemMeta) {
+            super(item, itemMeta);
+        }
+
+        @Override
+        public LeatherArmorBuilder toLeatherArmor() {
+            return this;
+        }
+
+        @Override
+        LeatherArmorBuilderTrait self() {
             return this;
         }
     }

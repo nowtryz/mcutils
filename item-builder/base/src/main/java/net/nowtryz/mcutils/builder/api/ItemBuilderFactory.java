@@ -70,6 +70,23 @@ public interface ItemBuilderFactory {
     }
 
     /**
+     * Create an armor builder from the given piece
+     * @param armor the material of the armor piece to use
+     * @throws IllegalArgumentException if the material is not a leather armor piece
+     * @return a leather armor builder
+     */
+    LeatherArmorBuilder createLeatherArmor(Material armor);
+
+    /**
+     * Create a leather armor builder from the given item
+     * @param itemStack the item to edit
+     * @param meta the item meta to copy
+     * @throws IllegalArgumentException if the material is not a leather armor piece
+     * @return a leather armor builder created from the given item
+     */
+    LeatherArmorBuilder createLeatherArmor(ItemStack itemStack, ItemMeta meta);
+
+    /**
      * Create a glass pane with the specified color
      * @param color the color to apply to the pane
      * @return an item builder for the glass pane

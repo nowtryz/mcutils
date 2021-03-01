@@ -2,11 +2,13 @@ package net.nowtryz.mcutils.builder.internal;
 
 import lombok.NonNull;
 import net.nowtryz.mcutils.builder.api.ItemBuilderFactory;
+import net.nowtryz.mcutils.builder.api.LeatherArmorBuilder;
 import net.nowtryz.mcutils.builder.api.MonterEggBuilder;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 
@@ -50,6 +52,33 @@ public class ThirteenFactory implements ItemBuilderFactory {
         itemStack.setType(Material.PLAYER_HEAD);
 
         return new SkullBuilder(new ThirteenBuilder.SimpleItemBuilder<>(itemStack, (SkullMeta) itemStack.getItemMeta()));
+    }
+
+    @Override
+    public LeatherArmorBuilder createLeatherArmor(Material armor) {
+        switch (armor) {
+            case LEATHER_HELMET:
+            case LEATHER_CHESTPLATE:
+            case LEATHER_LEGGINGS:
+            case LEATHER_BOOTS:
+                return new ThirteenBuilder.SimpleLeatherArmorBuilder(armor);
+            default:
+                throw new IllegalArgumentException("The given material must be a piece of leather armor, got " + armor);
+        }
+    }
+
+    @Override
+    public LeatherArmorBuilder createLeatherArmor(ItemStack itemStack, ItemMeta meta) {
+        switch (itemStack.getType()) {
+            case LEATHER_HELMET:
+            case LEATHER_CHESTPLATE:
+            case LEATHER_LEGGINGS:
+            case LEATHER_BOOTS:
+                itemStack.setItemMeta(meta);
+                return new ThirteenBuilder.SimpleLeatherArmorBuilder(itemStack, (LeatherArmorMeta) itemStack.getItemMeta());
+            default:
+                throw new IllegalArgumentException("The given material must be a piece of leather armor, got " + itemStack.getType());
+        }
     }
 
     @Override

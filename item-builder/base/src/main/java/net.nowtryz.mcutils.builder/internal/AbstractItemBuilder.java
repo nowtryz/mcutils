@@ -2,6 +2,7 @@ package net.nowtryz.mcutils.builder.internal;
 
 import net.nowtryz.mcutils.api.Translation;
 import net.nowtryz.mcutils.builder.api.ItemBuilder;
+import net.nowtryz.mcutils.builder.api.LeatherArmorBuilder;
 import net.nowtryz.mcutils.builder.api.MonterEggBuilder;
 import net.nowtryz.mcutils.builder.api.SkullBuilder;
 import org.bukkit.ChatColor;
@@ -148,6 +149,11 @@ abstract class AbstractItemBuilder<M extends ItemMeta, T extends ItemBuilder<T>>
     @Override
     public SkullBuilder toSkull() {
         return FACTORY.createSkull(this.itemStack, this.itemMeta);
+    }
+
+    @Override
+    public LeatherArmorBuilder toLeatherArmor() {
+        return FACTORY.createLeatherArmor(this.itemStack, this.itemMeta);
     }
 
     // Build item

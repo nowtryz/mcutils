@@ -162,10 +162,17 @@ public interface ItemBuilder<T extends ItemBuilder<T>> extends Cloneable {
     MonterEggBuilder toEgg();
 
     /**
-     * Convent this builder to a skull builder
+     * Convert this builder to a skull builder
      * @return a skull builder
      */
     SkullBuilder toSkull();
+
+    /**
+     * Convert this builder to a leather armor builder
+     * @throws IllegalArgumentException if the material is not a leather armor piece
+     * @return a leather armor builder
+     */
+    LeatherArmorBuilder toLeatherArmor();
 
     // Build item
 

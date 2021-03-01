@@ -1,15 +1,20 @@
 package net.nowtryz.mcutils.builder.internal;
 
 import net.nowtryz.mcutils.builder.api.ItemBuilder;
+import net.nowtryz.mcutils.builder.api.LeatherArmorBuilder;
 import net.nowtryz.mcutils.builder.api.MonterEggBuilder;
 import net.nowtryz.mcutils.builder.api.SimpleBuilder;
+import net.nowtryz.mcutils.builder.api.SkullBuilder;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.jetbrains.annotations.NotNull;
+
+import static net.nowtryz.mcutils.builder.internal.FactoryProvider.FACTORY;
 
 abstract class BellowThirteenBuilder<M extends ItemMeta, T extends ItemBuilder<T>> extends AbstractItemBuilder<M,T> {
     BellowThirteenBuilder(Material material, Class<M> metaClass) {
@@ -58,13 +63,13 @@ abstract class BellowThirteenBuilder<M extends ItemMeta, T extends ItemBuilder<T
         }
     }
 
-    static class BellowThirteenMonsterEggBuilder extends BellowThirteenBuilder<SpawnEggMeta, MonterEggBuilder> implements MonterEggBuilder {
+    static class SimpleMonsterEggBuilder extends BellowThirteenBuilder<SpawnEggMeta, MonterEggBuilder> implements MonterEggBuilder {
 
-        BellowThirteenMonsterEggBuilder() {
+        SimpleMonsterEggBuilder() {
             super(Material.MONSTER_EGG, SpawnEggMeta.class);
         }
 
-        BellowThirteenMonsterEggBuilder(ItemStack item, SpawnEggMeta meta) {
+        SimpleMonsterEggBuilder(ItemStack item, SpawnEggMeta meta) {
             super(item, meta);
         }
 
@@ -81,6 +86,26 @@ abstract class BellowThirteenBuilder<M extends ItemMeta, T extends ItemBuilder<T
         @Override
         public MonterEggBuilder setSpawnedType(EntityType type) {
             this.itemMeta.setSpawnedType(type);
+            return this;
+        }
+    }
+
+    static class SimpleLeatherArmorBuilder extends BellowThirteenBuilder<LeatherArmorMeta, LeatherArmorBuilder> implements LeatherArmorBuilderTrait {
+        SimpleLeatherArmorBuilder(Material material) {
+            super(material, LeatherArmorMeta.class);
+        }
+
+        SimpleLeatherArmorBuilder(@NotNull ItemStack item, LeatherArmorMeta itemMeta) {
+            super(item, itemMeta);
+        }
+
+        @Override
+        public LeatherArmorBuilder toLeatherArmor() {
+            return this;
+        }
+
+        @Override
+        LeatherArmorBuilderTrait self() {
             return this;
         }
     }

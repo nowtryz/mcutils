@@ -2,6 +2,7 @@ package net.nowtryz.mcutils.builder.internal;
 
 import net.nowtryz.mcutils.api.Translation;
 import net.nowtryz.mcutils.builder.api.ItemBuilder;
+import net.nowtryz.mcutils.builder.api.LeatherArmorBuilder;
 import net.nowtryz.mcutils.builder.api.MonterEggBuilder;
 import net.nowtryz.mcutils.builder.api.SkullBuilder;
 import org.bukkit.DyeColor;
@@ -149,6 +150,11 @@ abstract class ItemBuilderDecorator<M extends ItemMeta, T extends ItemBuilder<T>
     @Override
     public SkullBuilder toSkull() {
         return this.delegate.toSkull();
+    }
+
+    @Override
+    public LeatherArmorBuilder toLeatherArmor() {
+        return this.delegate.toLeatherArmor();
     }
 
     @Override
