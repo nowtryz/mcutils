@@ -1,9 +1,12 @@
 package net.nowtryz.mcutils.command.execution;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.*;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.spi.Dependency;
+import com.google.inject.spi.HasDependencies;
 import com.google.inject.spi.InjectionPoint;
 import lombok.Value;
 import net.nowtryz.mcutils.command.CommandResult;
@@ -21,14 +24,14 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MethodExecutor implements Executor {
+public class MethodExecutor implements Executor, HasDependencies {
     private static final Pattern PROVIDER_ARG = Pattern.compile("^\\s*<?(\\w+)>?\\s*$");
 
     private final @NotNull Method method;
     private final @NotNull SenderType target;
     private final @NotNull ImmutableList<String> argLine;
     private final @NotNull ImmutableList<GenericArg> genericArgs;
-    private final @NotNull ImmutableList<Dependency<?>> dependencies;
+    private final @NotNull ImmutableSet<Dependency<?>> dependencies;
     private final @NotNull Map<Key<?>, Provider<?>> cache = new HashMap<>();
     private final @NotNull ThreadLocal<ExecutionContext> localContext = new ThreadLocal<>();
     private final @NotNull InjectionPoint injectionPoint;
@@ -69,7 +72,7 @@ public class MethodExecutor implements Executor {
         this.genericArgs = argBuilder.build();
         this.injectionPoint = InjectionPoint.forMethod(method, TypeLiteral.get(method.getDeclaringClass()));
 
-        ImmutableList.Builder<Dependency<?>> builder = ImmutableList.builder();
+        ImmutableSet.Builder<Dependency<?>> builder = ImmutableSet.builder();
         for (Dependency<?> dep : injectionPoint.getDependencies()) {
             if (isCacheable(dep.getKey())) {
                 builder.add(dep);
@@ -95,9 +98,26 @@ public class MethodExecutor implements Executor {
         return context;
     }
 
+    /**
+     * Speed up the dependency resolution by providing the list of dependency to just
+     * TODO this can only work if Guice know the existence of this instance when the injector is used
+     *   -&gt; create a provider that will be injected by the child injector with these dependencies
+     * @return the dependencies
+     */
+    @Override
+    public Set<Dependency<?>> getDependencies() {
+        return this.dependencies;
+    }
+
     @Inject
     @SuppressWarnings("UnstableApiUsage")
     void init(Provider<Injector> injector) {
+        Preconditions.checkState(
+                this.injector == null,
+                "The methode executor for %s has already benn injected!",
+                this.methodID()
+        );
+
         // We use a provider, so AssistedInject doesn't complain about the fact we use the injector
         this.injector = injector.get();
 
@@ -230,7 +250,7 @@ public class MethodExecutor implements Executor {
     }
 
     @Override
-    public @NotNull CommandResult execute(ExecutionContext context) throws Throwable {
+    public @NotNull CommandResult execute(ExecutionContext context) throws Exception {
         this.localContext.set(context);
 
         // TODO use a "context cache" in order to call providers only once per execution
@@ -259,7 +279,11 @@ public class MethodExecutor implements Executor {
             return (CommandResult) method.invoke(this.object, args);
         } catch (ReflectiveOperationException e) {
             // unwrap to hide reflection and simply show exception thrown by the method
-            throw unwrap(e);
+            Throwable throwable = unwrap(e);
+
+            if (throwable instanceof Exception) throw (Exception) throwable;
+            if (throwable instanceof Error) throw (Error) throwable;
+            throw new IllegalStateException(throwable);
         }
     }
 

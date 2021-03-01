@@ -33,11 +33,11 @@ public class SimpleExecutor implements Executor {
 
 
     @Override
-    public @NotNull CommandResult execute(ExecutionContext context) throws Throwable {
+    public @NotNull CommandResult execute(ExecutionContext context) throws Exception {
         return this.onCommand.execute(context);
     }
 
     public interface Handler {
-        CommandResult execute(ExecutionContext context) throws Throwable;
+        CommandResult execute(ExecutionContext context) throws Exception;
     }
 }

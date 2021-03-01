@@ -102,12 +102,13 @@ public class CommandAdapter extends Command implements TabExecutor {
         try {
             CommandResult result = executor.execute(executionContext);
             return this.handle(executionContext, result);
-        } catch (Throwable throwable) {
+        } catch (Exception exception) {
             Supplier<String> errorMessage = () -> String.format(
                     "[MCUtils] Unhandled exception executing command '%s' in plugin %s",
                     context.getCommandLabel(),
                     this.node.getPlugin().getDescription().getFullName());
-            Bukkit.getLogger().log(Level.WARNING, throwable, errorMessage);
+            Bukkit.getLogger().log(Level.SEVERE, exception, errorMessage);
+            executionContext.setThrownError(exception);
             return this.handle(executionContext, CommandResult.INTERNAL_ERROR);
         }
     }

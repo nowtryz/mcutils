@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface Executor extends Execution {
     @NotNull
-    CommandResult execute(ExecutionContext context) throws Throwable;
+    CommandResult execute(ExecutionContext context) throws Exception;
 
     @NotNull
     SenderType getType();

@@ -2,7 +2,9 @@ package net.nowtryz.mcutils.command.contexts;
 
 import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 import lombok.Value;
+import lombok.experimental.NonFinal;
 import lombok.experimental.SuperBuilder;
 import net.nowtryz.mcutils.command.SenderType;
 import net.nowtryz.mcutils.command.execution.Executor;
@@ -19,4 +21,7 @@ public class ExecutionContext extends Context {
     @NotNull SenderType target;
     @Nullable CommandNode node;
     @Nullable Executor executor;
+
+    @Setter @NonFinal
+    @Nullable Throwable thrownError;
 }
