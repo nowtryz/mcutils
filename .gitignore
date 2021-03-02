@@ -3,6 +3,7 @@ BuildTools
 
 ### IDEA
 .idea
+**/*.iml
 
 ### Maven template
 .gradle
