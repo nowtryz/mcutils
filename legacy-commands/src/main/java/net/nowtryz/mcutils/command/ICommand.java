@@ -65,6 +65,7 @@ public interface ICommand<P extends Plugin, D> extends Executable<P> {
 
     /**
      * Perform post command action based on the result
+     * @param sender the sender of the command
      * @param result result of the executed command
      * @return true if usage is correct
      */

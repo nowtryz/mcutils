@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 /**
  * A module responsible from creating all bindings utilities for bukkit plugin development.
  *
- * <p></p>As the module uses {@link com.google.inject.internal.BindingBuilder#toInstance(Object) toInstance()}, injection
+ * <p>As the module uses {@link com.google.inject.internal.BindingBuilder#toInstance(Object) toInstance()}, injection
  * will be requested for the plugin. So you must avoid tu use {@link com.google.inject.Injector#injectMembers(Object)
  * Injector#injectMembers()} on the plugin.
  *
