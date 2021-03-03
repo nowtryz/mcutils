@@ -1,5 +1,6 @@
 package net.nowtryz.mcutils.listener;
 
+import com.google.common.collect.ImmutableList;
 import lombok.NonNull;
 import net.nowtryz.mcutils.MCUtils;
 import net.nowtryz.mcutils.api.Gui;
@@ -46,7 +47,8 @@ public class SimpleInventoryListener extends AbstractListener implements GuiList
 
     @Override
     public void closeAll() {
-        MCUtils.runOnPrimary(this.plugin, () -> this.inventories.values().forEach(Gui::closeInventory));
+        // We make a copy so the map can be edited in the close event
+        MCUtils.runOnPrimary(this.plugin, () -> ImmutableList.copyOf(this.inventories.values()).forEach(Gui::closeInventory));
     }
 
     @Override
