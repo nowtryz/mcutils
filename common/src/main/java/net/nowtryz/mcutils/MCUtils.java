@@ -2,12 +2,14 @@ package net.nowtryz.mcutils;
 
 import com.vdurmont.semver4j.Semver;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.projectiles.ProjectileSource;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -56,6 +58,17 @@ public class MCUtils {
     public static void runOnPrimary(Plugin plugin, Runnable runnable) {
         if (Bukkit.isPrimaryThread()) runnable.run();
         else Bukkit.getScheduler().runTask(plugin, runnable);
+    }
+
+    /**
+     * Replace '&amp;' by '§'
+     * @param message the message to transform
+     * @return the transformed message
+     */
+    @Contract("null->null;!null -> !null")
+    public static String parseColors(String message) {
+        if (message == null) return null;
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
 
