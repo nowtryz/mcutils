@@ -6,8 +6,11 @@ include 'mcutils',
         'commands',
         'gui',
         'guice',
-        'legacy-commands',
         'item-builder',
         'item-builder:base',
         'item-builder:above-1-13',
         'item-builder:bellow-1-13'
+
+// standalone modules
+include 'config',
+        'legacy-commands'
