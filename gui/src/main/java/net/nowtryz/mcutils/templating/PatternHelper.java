@@ -66,10 +66,11 @@ public class PatternHelper {
 
         ConfigurationSection hooksSection = configuration.getConfigurationSection("hooks");
         if (hooksSection == null) throw new IllegalArgumentException("Pattern must contain a hooks section");
-        Map<String, PatternKey> hooks = hooksSection.getKeys(false)
+        Map<String, PatternKey> hooks = hooksSection.getKeys(true)
                 .stream()
                 .collect(BiStream.toBiStream())
                 .mapValues((Function<String, String>) hooksSection::getString)
+                .filterValues(keys::containsKey) // filter hooks not present on the pattern
                 .mapValues(keys::get)
                 .toMap();
 
