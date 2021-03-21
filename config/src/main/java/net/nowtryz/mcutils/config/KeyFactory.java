@@ -5,6 +5,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.configuration.Configuration;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class KeyFactory {
@@ -45,16 +46,18 @@ public class KeyFactory {
     }
 
     public static Key<Material> materialKey(String path, Material def) {
-        return key(configuration -> {
-            Material material = Material.matchMaterial(configuration.getString(path));
-            return material != null ? material : def;
-        });
+        return key(configuration -> Optional.ofNullable(configuration.getString(path))
+                .map(Material::matchMaterial)
+                .orElse(def));
     }
 
     public static Key<BarColor> barColorKey(String path, BarColor def) {
         return key(configuration -> {
             try {
-                return BarColor.valueOf(configuration.getString(path, "").toUpperCase());
+                return Optional.ofNullable(configuration.getString(path, ""))
+                        .map(String::toUpperCase)
+                        .map(BarColor::valueOf)
+                        .orElse(def);
             } catch (IllegalArgumentException ignored) {}
             return def;
         });
