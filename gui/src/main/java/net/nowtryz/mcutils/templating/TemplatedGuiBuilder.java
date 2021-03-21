@@ -39,6 +39,10 @@ public class TemplatedGuiBuilder {
         return this.hookAction(name, event -> action.run(), provider);
     }
 
+    public final TemplatedGuiBuilder hookAction(String name, Runnable action) {
+        return this.hookAction(name, event -> action.run());
+    }
+
     public final TemplatedGuiBuilder hookItem(String name, ItemStack item) {
         this.pattern.getHook(name).ifPresent(hook -> this.hookItem(hook, item));
         return this;
@@ -152,6 +156,18 @@ public class TemplatedGuiBuilder {
     public final TemplatedGuiBuilder hookBack(String hookName) {
         if (gui.hasPrevious())this.hookAction(hookName, this.gui::onBack);
         return this;
+    }
+
+    /**
+     * Hook an item to the "back' action of the gui. It will only add the hook if the gui has a previous
+     * gui registered
+     * @param hookName the name of the hook in the pattern
+     * @param name the translation of the gui's name
+     * @param args translation arguments
+     * @return this builder
+     */
+    public final TemplatedGuiBuilder hookBack(String hookName, Translation name, Object... args) {
+        return this.hookBack(hookName, builder -> builder.setDisplayName(name, args));
     }
 
     /**
