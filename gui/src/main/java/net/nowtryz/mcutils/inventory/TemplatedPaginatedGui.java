@@ -28,7 +28,7 @@ public abstract class TemplatedPaginatedGui<P extends Plugin, V> extends Abstrac
     @Getter private int page = 0;
     @Getter private int count;
     private int[] availablePos;
-    private List<V> values;
+    private List<V> values = new ArrayList<>(); // in case the call to setValues is postpone
 
 //    public TemplatedPaginatedGui(P plugin, Player player, Collection<V> values, int previousPos, int nextPos) {
 //        super(plugin, player);
