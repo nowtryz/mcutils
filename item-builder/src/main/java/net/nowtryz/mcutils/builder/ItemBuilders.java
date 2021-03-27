@@ -22,7 +22,7 @@ public final class ItemBuilders {
      * @param material the material of the item
      * @return an item builder for the specified material
      */
-    public static SimpleBuilder create(Material material) {
+    public static ItemBuilder create(Material material) {
         return FACTORY.create(material);
     }
 
@@ -31,7 +31,7 @@ public final class ItemBuilders {
      * @param item the initial item
      * @return an item builder
      */
-    public static SimpleBuilder from(ItemStack item) {
+    public static ItemBuilder from(ItemStack item) {
         return FACTORY.from(item);
     }
 
@@ -39,7 +39,7 @@ public final class ItemBuilders {
      * Create a monster egg
      * @return an item builder for monster egg
      */
-    public static MonterEggBuilder createEgg() {
+    public static ItemBuilder createEgg() {
         return FACTORY.createEgg();
     }
 
@@ -49,7 +49,7 @@ public final class ItemBuilders {
      * @return an item builder for monster egg
      * @throws IllegalArgumentException if the provided item is not a monster egg
      */
-    public static MonterEggBuilder createEggFrom(ItemStack itemStack) {
+    public static ItemBuilder createEggFrom(ItemStack itemStack) {
         return FACTORY.createEggFrom(itemStack);
     }
 
@@ -71,30 +71,24 @@ public final class ItemBuilders {
     }
 
     /**
-     * Create an armor builder from the given piece
-     * @param armor the material of the armor piece to use
-     * @throws IllegalArgumentException if the material is not a leather armor piece
-     * @return a leather armor builder
-     */
-    public static LeatherArmorBuilder createLeatherArmor(Material armor) {
-        return FACTORY.createLeatherArmor(armor);
-    }
-
-    /**
      * Create a glass pane with the specified color
+     * <p>This is a utility method create glass pane whichever is the minecraft version
+     *
      * @param color the color to apply to the pane
      * @return an item builder for the glass pane
      */
-    public static SimpleBuilder createGlassPane(DyeColor color) {
+    public static ItemBuilder createGlassPane(DyeColor color) {
         return FACTORY.createGlassPane(color);
     }
 
     /**
      * Create a glass block with the specified color
+     * <p>This is a utility method create glass block whichever is the minecraft version
+     *
      * @param color the color to apply to the block
      * @return an item builder for the glass block
      */
-    public static SimpleBuilder createGlass(DyeColor color) {
+    public static ItemBuilder createGlass(DyeColor color) {
         return FACTORY.createGlass(color);
     }
 }

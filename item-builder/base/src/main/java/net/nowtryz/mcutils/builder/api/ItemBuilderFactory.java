@@ -13,20 +13,20 @@ public interface ItemBuilderFactory {
      * @param material the material of the item
      * @return an item builder for the specified material
      */
-    SimpleBuilder create(Material material);
+    ItemBuilder create(Material material);
 
     /**
      * Creates a builder to edit an exiting item
      * @param item the initial item
      * @return a builder
      */
-    SimpleBuilder from(ItemStack item);
+    ItemBuilder from(ItemStack item);
 
     /**
      * Create a monster egg
      * @return an item builder for monster egg
      */
-    MonterEggBuilder createEgg();
+    ItemBuilder createEgg();
 
     /**
      * Create an item builder from the provided item
@@ -34,16 +34,7 @@ public interface ItemBuilderFactory {
      * @return an item builder for monster egg
      * @throws IllegalArgumentException if the provided item is not a monster egg
      */
-    MonterEggBuilder createEggFrom(ItemStack itemStack);
-
-    /**
-     * Create an item builder from the provided item
-     * @param itemStack the item to edit
-     * @param meta the item meta to copy
-     * @return an item builder for monster egg
-     * @throws IllegalArgumentException if the provided item is not a monster egg
-     */
-    MonterEggBuilder createEggFrom(ItemStack itemStack, ItemMeta meta);
+    ItemBuilder createEggFrom(ItemStack itemStack);
 
     /**
      * Create builder able to create a player skull and edit its properties
@@ -70,33 +61,20 @@ public interface ItemBuilderFactory {
     }
 
     /**
-     * Create an armor builder from the given piece
-     * @param armor the material of the armor piece to use
-     * @throws IllegalArgumentException if the material is not a leather armor piece
-     * @return a leather armor builder
-     */
-    LeatherArmorBuilder createLeatherArmor(Material armor);
-
-    /**
-     * Create a leather armor builder from the given item
-     * @param itemStack the item to edit
-     * @param meta the item meta to copy
-     * @throws IllegalArgumentException if the material is not a leather armor piece
-     * @return a leather armor builder created from the given item
-     */
-    LeatherArmorBuilder createLeatherArmor(ItemStack itemStack, ItemMeta meta);
-
-    /**
      * Create a glass pane with the specified color
+     * <p>This is a utility method create glass pane whichever is the minecraft version
+     *
      * @param color the color to apply to the pane
      * @return an item builder for the glass pane
      */
-    SimpleBuilder createGlassPane(DyeColor color);
+    ItemBuilder createGlassPane(DyeColor color);
 
     /**
      * Create a glass block with the specified color
+     * <p>This is a utility method create glass block whichever is the minecraft version
+     *
      * @param color the color to apply to the block
      * @return an item builder for the glass block
      */
-    SimpleBuilder createGlass(DyeColor color);
+    ItemBuilder createGlass(DyeColor color);
 }

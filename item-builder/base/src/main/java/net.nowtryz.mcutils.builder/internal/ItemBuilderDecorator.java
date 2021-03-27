@@ -2,21 +2,24 @@ package net.nowtryz.mcutils.builder.internal;
 
 import net.nowtryz.mcutils.api.Translation;
 import net.nowtryz.mcutils.builder.api.ItemBuilder;
-import net.nowtryz.mcutils.builder.api.LeatherArmorBuilder;
-import net.nowtryz.mcutils.builder.api.MonterEggBuilder;
 import net.nowtryz.mcutils.builder.api.SkullBuilder;
+import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-abstract class ItemBuilderDecorator<M extends ItemMeta, T extends ItemBuilder<T>> implements ItemBuilder<T> {
-    protected DecorableItemBuilder<M,?> delegate;
+abstract class ItemBuilderDecorator<T extends ItemBuilder> implements ItemBuilder {
+    protected DecorableItemBuilder delegate;
 
-    ItemBuilderDecorator(DecorableItemBuilder<M,?> delegate) {
+    ItemBuilderDecorator(DecorableItemBuilder delegate) {
         this.delegate = delegate;
     }
 
@@ -55,6 +58,12 @@ abstract class ItemBuilderDecorator<M extends ItemMeta, T extends ItemBuilder<T>
     @Override
     public T setLore(Translation translation, Object... args) {
         this.delegate.setLore(translation, args);
+        return self();
+    }
+
+    @Override
+    public T setLore(String lore) {
+        this.delegate.setLore(lore);
         return self();
     }
 
@@ -143,18 +152,37 @@ abstract class ItemBuilderDecorator<M extends ItemMeta, T extends ItemBuilder<T>
     }
 
     @Override
-    public MonterEggBuilder toEgg() {
+    public T setSpawnedType(EntityType type) {
+        this.delegate.setSpawnedType(type);
+        return self();
+    }
+
+    @Override
+    public T setLeatherColor(Color color) {
+        this.delegate.setLeatherColor(color);
+        return self();
+    }
+
+    @Override
+    public ItemBuilder setPotionType(PotionType type) {
+        this.delegate.setPotionType(type);
+        return self();
+    }
+
+    @Override
+    public <M extends ItemMeta> T asMeta(Class<M> metaClass, Consumer<M> metaConsumer) {
+        this.delegate.asMeta(metaClass, metaConsumer);
+        return self();
+    }
+
+    @Override
+    public ItemBuilder toEgg() {
         return this.delegate.toEgg();
     }
 
     @Override
     public SkullBuilder toSkull() {
         return this.delegate.toSkull();
-    }
-
-    @Override
-    public LeatherArmorBuilder toLeatherArmor() {
-        return this.delegate.toLeatherArmor();
     }
 
     @Override

@@ -15,7 +15,7 @@ class TemplateAction<T extends AbstractGui<?>> {
     private PatternKey key;
     private ItemProvider update;
     private Consumer<? super InventoryClickEvent> onClick;
-    private BiFunction<T, ItemBuilder<?>, ItemBuilder<?>> onBuild;
+    private BiFunction<T, ItemBuilder, ItemBuilder> onBuild;
 
     public static class TemplateActionBuilder<T extends AbstractGui<?>> {
         Template<T> template;

@@ -1,22 +1,27 @@
 package net.nowtryz.mcutils.builder.api;
 
 import net.nowtryz.mcutils.api.Translation;
+import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-public interface ItemBuilder<T extends ItemBuilder<T>> extends Cloneable {
+public interface ItemBuilder extends Cloneable {
     /**
      * Sets the display name.
      *
      * @param name the name to set
      * @return this ItemBuilder
      */
-    T setDisplayName(String name);
+    ItemBuilder setDisplayName(String name);
 
     /**
      * Sets the display name.
@@ -25,13 +30,13 @@ public interface ItemBuilder<T extends ItemBuilder<T>> extends Cloneable {
      * @param values values for the translation
      * @return this ItemBuilder
      */
-    T setDisplayName(Translation translation, Object... values);
+    ItemBuilder setDisplayName(Translation translation, Object... values);
 
     /**
      * Set the name of the item to a space, to hide it
      * @return this ItemBuilder
      */
-    T dropName();
+    ItemBuilder dropName();
 
     /**
      * Sets the localized name.
@@ -39,7 +44,7 @@ public interface ItemBuilder<T extends ItemBuilder<T>> extends Cloneable {
      * @param name the name to set
      * @return this ItemBuilder
      */
-    T setLocalizedName(String name);
+    ItemBuilder setLocalizedName(String name);
 
     /**
      * Sets the lore for this item.
@@ -48,7 +53,7 @@ public interface ItemBuilder<T extends ItemBuilder<T>> extends Cloneable {
      * @param lore the lore that will be set
      * @return this ItemBuilder
      */
-    T setLore(List<String> lore);
+    ItemBuilder setLore(List<String> lore);
 
     /**
      * Sets the lore for this item.
@@ -58,7 +63,16 @@ public interface ItemBuilder<T extends ItemBuilder<T>> extends Cloneable {
      * @param values values for the translation
      * @return this ItemBuilder
      */
-    T setLore(Translation translation, Object... values);
+    ItemBuilder setLore(Translation translation, Object... values);
+
+    /**
+     * Sets the lore for this item.
+     * Removes lore when given null.
+     *
+     * @param lore the lore that will be set. This lore is split on each line to create a new line on the item
+     * @return this ItemBuilder
+     */
+    ItemBuilder setLore(String lore);
 
     /**
      * Set itemflags which should be ignored when rendering a ItemStack in the Client. This Method does silently ignore double set itemFlags.
@@ -66,13 +80,13 @@ public interface ItemBuilder<T extends ItemBuilder<T>> extends Cloneable {
      * @param itemFlags The hide flags which shouldn't be rendered
      * @return this ItemBuilder
      */
-    T addItemFlags(ItemFlag... itemFlags);
+    ItemBuilder addItemFlags(ItemFlag... itemFlags);
 
     /**
      * Ignore all properties while rendering on the client
      * @return this ItemBuilder
      */
-    T addAllItemFlags();
+    ItemBuilder addAllItemFlags();
 
     /**
      * Adds the specified enchantment to this item meta.
@@ -83,20 +97,20 @@ public interface ItemBuilder<T extends ItemBuilder<T>> extends Cloneable {
      *     applied, ignoring the level limit
      * @return this ItemBuilder
      */
-    T addEnchant(Enchantment enchantment, int level, boolean ignoreLevelRestriction);
+    ItemBuilder addEnchant(Enchantment enchantment, int level, boolean ignoreLevelRestriction);
 
     /**
      * Make the item glowing if the provided condition is true
      * @param glowing the condition
      * @return this ItemBuilder
      */
-    T setGlowing(boolean glowing);
+    ItemBuilder setGlowing(boolean glowing);
 
     /**
      * Make the item glowing
      * @return this ItemBuilder
      */
-    T setGlowing();
+    ItemBuilder setGlowing();
 
     /**
      * Sets the unbreakable tag. An unbreakable item will not lose durability.
@@ -104,7 +118,7 @@ public interface ItemBuilder<T extends ItemBuilder<T>> extends Cloneable {
      * @param unbreakable true if set unbreakable
      * @return this ItemBuilder
      */
-    T setUnbreakable(boolean unbreakable);
+    ItemBuilder setUnbreakable(boolean unbreakable);
 
     /**
      * Removes the specified enchantment from this item meta.
@@ -112,7 +126,7 @@ public interface ItemBuilder<T extends ItemBuilder<T>> extends Cloneable {
      * @param enchantment Enchantment to remove
      * @return this ItemBuilder
      */
-    T removeEnchant(Enchantment enchantment);
+    ItemBuilder removeEnchant(Enchantment enchantment);
 
     /**
      * Remove specific set of itemFlags. This tells the Client it should render it again. This Method does silently ignore double removed itemFlags.
@@ -120,13 +134,13 @@ public interface ItemBuilder<T extends ItemBuilder<T>> extends Cloneable {
      * @param itemFlags Hide flags which should be removed
      * @return this ItemBuilder
      */
-    T removeItemFlags(ItemFlag... itemFlags);
+    ItemBuilder removeItemFlags(ItemFlag... itemFlags);
 
     /**
      * Remove all enchantements added to this item
      * @return this ItemBuilder
      */
-    T clearEnchants();
+    ItemBuilder clearEnchants();
 
     /**
      * Sets the amount of the item stack
@@ -134,7 +148,7 @@ public interface ItemBuilder<T extends ItemBuilder<T>> extends Cloneable {
      * @param amount stack size
      * @return this ItemBuilder
      */
-    T setAmount(int amount);
+    ItemBuilder setAmount(int amount);
 
     /**
      * Sets the durability of the item stack
@@ -142,37 +156,62 @@ public interface ItemBuilder<T extends ItemBuilder<T>> extends Cloneable {
      * @param damage durability / damage
      * @return this ItemBuilder
      */
-    T setDurability(short damage);
+    ItemBuilder setDurability(short damage);
 
     /**
      * Sets the color of this item
      * @param color the color to use
      * @return this ItemBuilder
      */
-    T setColor(DyeColor color);
+    ItemBuilder setColor(DyeColor color);
 
-    T setWoolColor(DyeColor color);
+    ItemBuilder setWoolColor(DyeColor color);
 
-    T setDyeColor(DyeColor color);
+    ItemBuilder setDyeColor(DyeColor color);
+
+    /**
+     * Set the type of entity this egg will spawn (if this is an egg).
+     * @param type The entity type. May be null for implementation specific default.
+     * @return this builder
+     */
+    ItemBuilder setSpawnedType(EntityType type);
+
+    /**
+     * Set the leather color of this piece of armor
+     * @param color the color to set
+     * @throws IllegalArgumentException if the material is not a leather armor piece
+     * @return this builder
+     */
+    ItemBuilder setLeatherColor(Color color);
+
+
+    /**
+     * Set the base potion effect if this item is a potion
+     * @param type the type to apply
+     * @return this builder
+     */
+    ItemBuilder setPotionType(PotionType type);
+
+    /**
+     * Directly used the meta held by this item builder if it is an instance of the given meta class
+     * @param metaClass the meta class to use
+     * @param metaConsumer the action to run if the meta match the given class
+     * @param <T> the generic type of the class
+     * @return this builder
+     */
+    <T extends ItemMeta> ItemBuilder asMeta(Class<T> metaClass, Consumer<T> metaConsumer);
 
     /**
      * Convert this builder to a monster egg builder
      * @return a monster egg builder
      */
-    MonterEggBuilder toEgg();
+    ItemBuilder toEgg();
 
     /**
      * Convert this builder to a skull builder
      * @return a skull builder
      */
     SkullBuilder toSkull();
-
-    /**
-     * Convert this builder to a leather armor builder
-     * @throws IllegalArgumentException if the material is not a leather armor piece
-     * @return a leather armor builder
-     */
-    LeatherArmorBuilder toLeatherArmor();
 
     // Build item
 
@@ -193,8 +232,8 @@ public interface ItemBuilder<T extends ItemBuilder<T>> extends Cloneable {
     @Deprecated
     ItemStack build(Byte data);
 
-    interface DecorableItemBuilder<M extends ItemMeta, T extends ItemBuilder<T>> extends ItemBuilder<T> {
+    interface DecorableItemBuilder extends ItemBuilder {
         ItemStack getItem();
-        M getMeta();
+        ItemMeta getMeta();
     }
 }

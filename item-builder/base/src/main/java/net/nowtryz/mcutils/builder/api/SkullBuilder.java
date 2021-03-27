@@ -4,7 +4,7 @@ import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
 
-public interface SkullBuilder extends ItemBuilder<SkullBuilder> {
+public interface SkullBuilder extends ItemBuilder {
     /**
      * Set the player owning the skull
      * @param player the new player owning the skull

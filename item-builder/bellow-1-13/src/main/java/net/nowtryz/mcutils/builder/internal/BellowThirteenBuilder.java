@@ -1,112 +1,82 @@
 package net.nowtryz.mcutils.builder.internal;
 
 import net.nowtryz.mcutils.builder.api.ItemBuilder;
-import net.nowtryz.mcutils.builder.api.LeatherArmorBuilder;
-import net.nowtryz.mcutils.builder.api.MonterEggBuilder;
-import net.nowtryz.mcutils.builder.api.SimpleBuilder;
-import net.nowtryz.mcutils.builder.api.SkullBuilder;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.SpawnEggMeta;
+import org.bukkit.inventory.meta.*;
 import org.jetbrains.annotations.NotNull;
 
-import static net.nowtryz.mcutils.builder.internal.FactoryProvider.FACTORY;
-
-abstract class BellowThirteenBuilder<M extends ItemMeta, T extends ItemBuilder<T>> extends AbstractItemBuilder<M,T> {
-    BellowThirteenBuilder(Material material, Class<M> metaClass) {
-        super(material, metaClass);
+class BellowThirteenBuilder extends AbstractItemBuilder<BellowThirteenBuilder> {
+    BellowThirteenBuilder(Material material) {
+        super(material);
     }
 
-    BellowThirteenBuilder(@NotNull ItemStack item, M itemMeta) {
+    BellowThirteenBuilder(@NotNull ItemStack item, ItemMeta itemMeta) {
         super(item, itemMeta);
     }
 
     @Override
-    public T setColor(DyeColor color) {
-        return this.setWoolColor(color);
+    BellowThirteenBuilder self() {
+        return this;
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public T setWoolColor(DyeColor color) {
+    public BellowThirteenBuilder setColor(DyeColor color) {
+        if (this.itemMeta instanceof BannerMeta) return this.asMeta(BannerMeta.class, meta -> meta.setBaseColor(color));
+        else return this.setWoolColor(color);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public BellowThirteenBuilder setWoolColor(DyeColor color) {
         return this.setDurability(color.getWoolData());
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public T setDyeColor(DyeColor color) {
+    public BellowThirteenBuilder setDyeColor(DyeColor color) {
         return this.setDurability(color.getDyeData());
     }
 
     @Override
-    public T setDurability(short damage) {
+    public BellowThirteenBuilder setSpawnedType(EntityType type) {
+        this.asMeta(SpawnEggMeta.class, meta -> meta.setSpawnedType(type));
+        return this;
+    }
+
+    @Override
+    public BellowThirteenBuilder toEgg() {
+        this.itemStack.setItemMeta(this.itemMeta);
+        this.itemStack.setType(Material.MONSTER_EGG);
+        this.itemMeta = this.itemStack.getItemMeta();
+        return this;
+    }
+
+    @Override
+    public BellowThirteenBuilder setDurability(short damage) {
         this.itemStack.setDurability(damage);
         return this.self();
     }
 
-    static class SimpleItemBuilder<M extends ItemMeta> extends BellowThirteenBuilder<M, SimpleBuilder> implements SimpleBuilder {
-        SimpleItemBuilder(Material material, Class<M> metaClass) {
-            super(material, metaClass);
-        }
+    static class SimpleSkullBuilder extends SkullBuilder {
 
-        SimpleItemBuilder(@NotNull ItemStack item, M itemMeta) {
-            super(item, itemMeta);
+        SimpleSkullBuilder(DecorableItemBuilder delegate) {
+            super(delegate);
         }
 
         @Override
-        SimpleItemBuilder<M> self() {
-            return this;
-        }
-    }
-
-    static class SimpleMonsterEggBuilder extends BellowThirteenBuilder<SpawnEggMeta, MonterEggBuilder> implements MonterEggBuilder {
-
-        SimpleMonsterEggBuilder() {
-            super(Material.MONSTER_EGG, SpawnEggMeta.class);
-        }
-
-        SimpleMonsterEggBuilder(ItemStack item, SpawnEggMeta meta) {
-            super(item, meta);
+        public SkullBuilder setOwningPlayer(OfflinePlayer player) {
+            return this.setName(player.getName());
         }
 
         @Override
-        MonterEggBuilder self() {
-            return this;
-        }
-
-        @Override
-        public MonterEggBuilder toEgg() {
-            return this;
-        }
-
-        @Override
-        public MonterEggBuilder setSpawnedType(EntityType type) {
-            this.itemMeta.setSpawnedType(type);
-            return this;
-        }
-    }
-
-    static class SimpleLeatherArmorBuilder extends BellowThirteenBuilder<LeatherArmorMeta, LeatherArmorBuilder> implements LeatherArmorBuilderTrait {
-        SimpleLeatherArmorBuilder(Material material) {
-            super(material, LeatherArmorMeta.class);
-        }
-
-        SimpleLeatherArmorBuilder(@NotNull ItemStack item, LeatherArmorMeta itemMeta) {
-            super(item, itemMeta);
-        }
-
-        @Override
-        public LeatherArmorBuilder toLeatherArmor() {
-            return this;
-        }
-
-        @Override
-        LeatherArmorBuilderTrait self() {
-            return this;
+        @SuppressWarnings("deprecation")
+        public SkullBuilder setName(String name) {
+            return this.asMeta(SkullMeta.class, meta -> meta.setOwner(name));
         }
     }
 }

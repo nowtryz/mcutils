@@ -3,7 +3,6 @@ package net.nowtryz.mcutils.inventory;
 import lombok.Getter;
 import net.nowtryz.mcutils.MCUtils;
 import net.nowtryz.mcutils.api.Gui;
-import net.nowtryz.mcutils.api.GuiListenerProvider;
 import net.nowtryz.mcutils.api.listener.GuiListener;
 import net.nowtryz.mcutils.builder.api.ItemBuilder;
 import net.nowtryz.mcutils.templating.Pattern;
@@ -16,8 +15,6 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-
-import static net.nowtryz.mcutils.MCUtils.runOnPrimary;
 
 public abstract class TemplatedPaginatedGui<P extends Plugin, V> extends AbstractGui<P> {
     private final Pattern pattern;
@@ -151,7 +148,7 @@ public abstract class TemplatedPaginatedGui<P extends Plugin, V> extends Abstrac
      * @return the icon
      */
     @NotNull
-    protected ItemStack buildPreviousIcon(ItemBuilder<?> builder) {
+    protected ItemStack buildPreviousIcon(ItemBuilder builder) {
         return builder.build();
     }
 
@@ -161,7 +158,7 @@ public abstract class TemplatedPaginatedGui<P extends Plugin, V> extends Abstrac
      * @return the icon
      */
     @NotNull
-    protected ItemStack buildNextIcon(ItemBuilder<?> builder) {
+    protected ItemStack buildNextIcon(ItemBuilder builder) {
         return builder.build();
     }
 
@@ -172,7 +169,7 @@ public abstract class TemplatedPaginatedGui<P extends Plugin, V> extends Abstrac
      * @return the item to bind
      */
     @NotNull
-    protected abstract ItemStack createItemForObject(ItemBuilder<?> builder, V object);
+    protected abstract ItemStack createItemForObject(ItemBuilder builder, V object);
 
     /**
      * Handle click on an item

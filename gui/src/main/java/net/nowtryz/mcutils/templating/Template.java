@@ -30,7 +30,7 @@ public class Template<T extends AbstractGui<?>> {
             PatternKey key = action.getKey();
 
             if (action.getUpdate() != null && key.getItem() != null && key.isPresent()) {
-                ItemBuilder<?> builder = ItemBuilders.from(key.getItem());
+                ItemBuilder builder = ItemBuilders.from(key.getItem());
                 ItemStack newItem = action.getUpdate().build(builder).build();
                 for (int i : key.getPositions()) this.inventory[i] = newItem;
             }

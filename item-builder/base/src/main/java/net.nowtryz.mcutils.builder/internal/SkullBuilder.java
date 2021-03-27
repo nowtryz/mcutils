@@ -2,17 +2,23 @@ package net.nowtryz.mcutils.builder.internal;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.nowtryz.mcutils.builder.api.ItemBuilder;
+import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionType;
 
 import java.lang.reflect.Field;
 import java.util.Base64;
 import java.util.UUID;
+import java.util.function.Consumer;
 
-class SkullBuilder extends ItemBuilderDecorator<SkullMeta, net.nowtryz.mcutils.builder.api.SkullBuilder> implements net.nowtryz.mcutils.builder.api.SkullBuilder {
+class SkullBuilder extends ItemBuilderDecorator<SkullBuilder> implements net.nowtryz.mcutils.builder.api.SkullBuilder {
     private static Field PROFILE_FIELD = null;
 
-    SkullBuilder(DecorableItemBuilder<SkullMeta, ?> delegate) {
+    SkullBuilder(DecorableItemBuilder delegate) {
         super(delegate);
     }
 
@@ -23,7 +29,7 @@ class SkullBuilder extends ItemBuilderDecorator<SkullMeta, net.nowtryz.mcutils.b
 
     @Override
     public SkullBuilder setOwningPlayer(OfflinePlayer player) {
-        this.delegate.getMeta().setOwningPlayer(player);
+        this.asMeta(SkullMeta.class, meta -> meta.setOwningPlayer(player));
         return this;
     }
 

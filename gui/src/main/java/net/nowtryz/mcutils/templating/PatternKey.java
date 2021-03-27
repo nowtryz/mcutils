@@ -2,7 +2,7 @@ package net.nowtryz.mcutils.templating;
 
 import lombok.Value;
 import net.nowtryz.mcutils.builder.ItemBuilders;
-import net.nowtryz.mcutils.builder.api.SimpleBuilder;
+import net.nowtryz.mcutils.builder.api.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +15,7 @@ public class PatternKey {
     @Nullable
     ItemStack fallback;
 
-    public SimpleBuilder builder() {
+    public ItemBuilder builder() {
         return ItemBuilders.from(this.item.clone());
     }
 
@@ -27,11 +27,11 @@ public class PatternKey {
         return fallback != null && fallback.getType() != Material.AIR;
     }
 
-    public SimpleBuilder safeBuilder() {
+    public ItemBuilder safeBuilder() {
         return this.isBuildable() ? this.builder() : ItemBuilders.create(Material.STONE);
     }
 
-    public SimpleBuilder fallbackBuilder() {
+    public ItemBuilder fallbackBuilder() {
         return this.isFallbackBuildable() ? ItemBuilders.from(this.fallback) : ItemBuilders.create(Material.STONE);
     }
 

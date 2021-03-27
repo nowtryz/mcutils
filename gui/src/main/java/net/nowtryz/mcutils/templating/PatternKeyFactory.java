@@ -14,11 +14,9 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionType;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -68,13 +66,15 @@ public class PatternKeyFactory {
     }
 
     private static ItemStack parseItem(ConfigurationSection section) {
-        ItemBuilder<?> builder = extractBaseItem(section);
+        ItemBuilder builder = extractBaseItem(section);
 
         if (section.contains("data")) builder.setDurability((short) section.getInt("data", 0));
+        if (section.contains("potion")) setPotionType(builder, section);
         if (section.contains("color")) builder.setColor(parseColor(section.getString("color")));
         if (section.contains("dye")) builder.setDyeColor(parseColor(section.getString("dye")));
         if (section.contains("name")) builder.setDisplayName(parseAmp(section.getString("name")));
         if (section.contains("glowing")) builder.setGlowing(section.getBoolean("glowing"));
+        if (!section.getBoolean("attributes", true)) builder.addAllItemFlags();
         if (section.contains("lore")) builder.setLore(section.getStringList("lore")
                 .stream()
                 .map(PatternKeyFactory::parseAmp)
@@ -83,19 +83,35 @@ public class PatternKeyFactory {
         return builder.build();
     }
 
-    private static ItemBuilder<?> extractBaseItem(ConfigurationSection section) {
+    private static void setPotionType(ItemBuilder builder, ConfigurationSection section) {
+        String value = section.getString("potion");
+        if (value == null) return;
+
+        try {
+            PotionType type = PotionType.valueOf(formatEnumName(value));
+            builder.setPotionType(type);
+        } catch (IllegalArgumentException ignored) {
+            Bukkit.getLogger().warning(String.format("[Templating] %s.potion (%s) is not a valid potion type", section.getCurrentPath(), value));
+            Bukkit.getLogger().warning("[Templating] Valide potions are: " + Arrays.stream(PotionType.values())
+                    .map(Enum::name)
+                    .map(String::toLowerCase)
+                    .collect(Collectors.joining(", ")));
+        }
+    }
+
+    private static ItemBuilder extractBaseItem(ConfigurationSection section) {
         if (section.contains("skull")) return parseSkull(Objects.requireNonNull(section.getConfigurationSection("skull")));
         if (section.contains("material")) return parseMaterial(section);
 
         throw new IllegalArgumentException("Key must have one of the following properties: material, skull (" + section.getCurrentPath() + ")");
     }
 
-    private static ItemBuilder<?> parseMaterial(ConfigurationSection section) {
+    private static ItemBuilder parseMaterial(ConfigurationSection section) {
         String materialName = section.getString("material");
 
         if (materialName == null) throw new IllegalArgumentException(section.getCurrentPath() + ".material is missing");
 
-        String formattedName = formatMaterial(materialName);
+        String formattedName = formatEnumName(materialName);
         Material material = Material.getMaterial(formattedName);
 
         if (material == null && MCUtils.THIRTEEN_COMPATIBLE) {
@@ -141,7 +157,7 @@ public class PatternKeyFactory {
                 .replaceAll("\\W", ""));
     }
 
-    private static String formatMaterial(@NonNull String input) {
+    private static String formatEnumName(@NonNull String input) {
         String name = input
                     .replaceFirst("minecraft:", "")
                     .toUpperCase(Locale.ENGLISH)

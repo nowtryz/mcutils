@@ -6,5 +6,5 @@ import org.jetbrains.annotations.NotNull;
 @FunctionalInterface
 public interface ItemProvider {
     @NotNull
-    ItemBuilder<?> build(ItemBuilder<?> builder);
+    ItemBuilder build(ItemBuilder builder);
 }
