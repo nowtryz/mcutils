@@ -33,6 +33,10 @@ public class KeyFactory {
         return key(configuration -> configuration.getLong(path));
     }
 
+    public static Key<Long> longKey(String path, long def) {
+        return key(configuration -> configuration.getLong(path, def));
+    }
+
     public static Key<String> stringKey(String path, String def) {
         return key(configuration -> configuration.getString(path, def));
     }
