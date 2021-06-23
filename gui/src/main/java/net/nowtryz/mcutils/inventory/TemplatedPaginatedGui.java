@@ -56,7 +56,7 @@ public abstract class TemplatedPaginatedGui<P extends Plugin, V> extends Abstrac
 
         for (; i < pageContent.size(); i++) {
             V object = pageContent.get(i);
-            ItemStack item = this.getItem(object);
+            ItemStack item = this.getItem(first+i, object);
             int pos = this.availablePos[i];
 
             // will override handler for the same item if already placed
@@ -127,11 +127,11 @@ public abstract class TemplatedPaginatedGui<P extends Plugin, V> extends Abstrac
         this.setPage(this.page); // update page to fit the count
     }
 
-    private ItemStack getItem(V object) {
+    private ItemStack getItem(int index, V object) {
         if (this.items.containsKey(object)) return this.items.get(object);
 
 
-        ItemStack item = this.createItemForObject(this.paginatedKey.safeBuilder(), object);
+        ItemStack item = this.createItemForObject(index, this.paginatedKey.safeBuilder(), object);
         this.items.put(object, item);
         return item;
     }
@@ -164,12 +164,13 @@ public abstract class TemplatedPaginatedGui<P extends Plugin, V> extends Abstrac
 
     /**
      * Create the icon bound to the object in the inventory
+     * @param index the index of the object in the values
      * @param builder the item builder from the pattern
      * @param object the object
      * @return the item to bind
      */
     @NotNull
-    protected abstract ItemStack createItemForObject(ItemBuilder builder, V object);
+    protected abstract ItemStack createItemForObject(int index, ItemBuilder builder, V object);
 
     /**
      * Handle click on an item
